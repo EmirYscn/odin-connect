@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MEDIA_TYPE {
+  IMAGE
+  VIDEO
+  AUDIO
+}
+
+model Profile {
+  id       String  @id @default(uuid())
+  bio      String? // User's bio
+  location String? // User's location
+  website  String? // User's personal website or blog
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft delete timestamp
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique // One-to-one relationship with User
+}
+
+model User {
+  id       String  @id @default(uuid())
+  email    String  @unique
+  displayName String? // User's display name
+  username String  @unique
+  password String?
+  avatar   String? // Direct URL to avatar image
+  backgroundImage String? // Direct URL to background image
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete timestamp
+
+  resetPasswordToken   String?   @unique // Token for password reset
+  resetPasswordExpires DateTime? // Expiration date for the token
+
+  // Relations
+
+  posts   Post[] // One-to-many relationship with Post
+  likes   Like[] // One-to-many relationship with Like
+  bookmarks Bookmark[] // One-to-many relationship with Bookmark
+  reposts Repost[] // One-to-many relationship with Repost
+  medias  Media[] // One-to-many relationship with Media
+  profile Profile? // One-to-one relationship with Profile
+
+  following    UserFollowing[] @relation("Following")
+  followers    UserFollowing[] @relation("Followers")
+  blockedUsers UserBlocked[]   @relation("BlockedUsers")
+  blockedBy    UserBlocked[]   @relation("BlockedBy")
+
+  userSettings UserSettings?
+}
+
+model UserFollowing {
+  id          String @id @default(uuid())
+  followerId  String
+  followingId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  follower  User @relation("Following", fields: [followerId], references: [id])
+  following User @relation("Followers", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+model UserBlocked {
+  id            String @id @default(uuid())
+  userId        String
+  blockedUserId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User @relation("BlockedUsers", fields: [userId], references: [id])
+  blockedUser User @relation("BlockedBy", fields: [blockedUserId], references: [id])
+
+  @@unique([userId, blockedUserId])
+}
+
+model UserSettings {
+  id String @id @default(uuid())
+
+  notifications Boolean @default(true) // Whether the user wants notifications
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft delete timestamp
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique // One-to-one relationship with User
+}
+
+model Post {
+  id      String @id @default(uuid())
+  content String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete timestamp
+
+  published Boolean @default(true) // Whether the post is published or not
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  parent    Post?     @relation("PostReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId  String?   // If null, it's a top-level post; if set, it's a reply/comment
+
+  replies   Post[]    @relation("PostReplies") // All replies/comments to this post
+  likes   Like[] // One-to-many relationship with Like
+  bookmarks Bookmark[] // One-to-many relationship with Bookmark
+  reposts Repost[] // One-to-many relationship with Repost
+  medias Media[] // One-to-many relationship with Media
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String?
+
+  @@unique([userId, postId])
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+
+  @@unique([userId, postId])
+}
+
+model Repost {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+
+  @@unique([userId, postId]) // A user can retweet a post only once
+}
+
+model Media {
+  id   String     @id @default(uuid())
+  url  String // Direct URL to the media file
+  filePath  String // Local file path to the media file
+  type MEDIA_TYPE // Type of media (e.g., image, video, audio)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft delete timestamp
+
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
