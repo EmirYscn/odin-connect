@@ -5,7 +5,7 @@ import { User } from '@prisma/client';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import authConfig from '../config/auth.config';
 import { UsersService } from '../../users/users.service';
-import { JwtObject } from '../types/jwt';
+import { JwtObject } from '../../common/types/jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

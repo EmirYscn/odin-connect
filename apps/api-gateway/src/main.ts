@@ -4,23 +4,21 @@ import { ConfigService } from '@nestjs/config';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-// import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { AppModule } from './app/app.module';
 import { Logger } from '@nestjs/common';
+import { GlobalExceptionFilter } from './app/common/filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   const configService = app.get(ConfigService);
   const clientUrl = configService.get<string>('appConfig.clientUrl');
   const port = configService.get<number>('appConfig.port') || 3000;
+  const environment = configService.get<string>('appConfig.environment');
 
   Logger.log(`API Gateway running on port ${port}`, 'Bootstrap');
-  Logger.log(
-    `Node environment: ${configService.get('appConfig.environment')}`,
-    'Bootstrap'
-  );
+  Logger.log(`Node environment: ${environment}`, 'Bootstrap');
 
   app.use(cookieParser());
   app.use(morgan('dev'));

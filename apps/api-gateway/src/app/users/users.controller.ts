@@ -12,9 +12,9 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UpdateUserSettingsDto } from './dtos/update-user-settings.dto';
 import type { User as UserType } from '@prisma/client';
-import { Auth } from '../decorators/auth.decorator';
-import { User } from '../decorators/user.decorator';
-import { UsersInterceptor } from '../interceptors/users.interceptor';
+import { Auth } from '../common/decorators/auth.decorator';
+import { User } from '../common/decorators/user.decorator';
+import { UsersInterceptor } from '../common/interceptors/users.interceptor';
 
 @Controller('users')
 @UseInterceptors(UsersInterceptor)

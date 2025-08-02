@@ -25,10 +25,10 @@ import { GoogleAuthGuard } from './guards/google.guard';
 import { GithubAuthGuard } from './guards/github.guard';
 import appConfig from '../config/app.config';
 import { CreateUserDto } from '../users/dtos/create-user.dto';
-import { Auth } from '../decorators/auth.decorator';
-import { User } from '../decorators/user.decorator';
-import { UsersInterceptor } from '../interceptors/users.interceptor';
-import type { UserWithProfile } from './types/prismaTypes';
+import { Auth } from '../common/decorators/auth.decorator';
+import { User } from '../common/decorators/user.decorator';
+import { UsersInterceptor } from '../common/interceptors/users.interceptor';
+import type { UserWithProfile } from '../common/types/prismaTypes';
 
 @Controller('auth')
 export class AuthController {
@@ -72,6 +72,8 @@ export class AuthController {
 
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
+  // This method is intentionally left empty as the guard handles the logic
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   handleLoginWithGoogle() {}
 
   @Get('google/callback')
@@ -101,6 +103,8 @@ export class AuthController {
 
   @Get('github/login')
   @UseGuards(GithubAuthGuard)
+  // This method is intentionally left empty as the guard handles the logic
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   handleLoginWithGithub() {}
 
   @Get('github/callback')

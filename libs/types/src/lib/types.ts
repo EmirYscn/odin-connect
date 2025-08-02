@@ -151,9 +151,36 @@ export type UserSettings = {
   user: User;
 } & Omit<DateFields, 'deletedAt'>;
 
+export interface PostCreatedPayload {
+  id: string;
+  content: string;
+  createdAt: string;
+  user: {
+    id: string;
+    username: string;
+    displayName: string | null;
+    avatar?: string | null;
+    profile: {
+      id: string;
+    } | null;
+  };
+  medias?: {
+    id: string;
+    url: string;
+    filePath: string;
+    type: MediaType;
+  }[]; // Optional, if the post has media
+  _count?: {
+    replies?: number;
+    likes?: number;
+    bookmarks?: number;
+    reposts?: number;
+  };
+}
+
 export interface ServerToClientEvents {
   'message:received': (data: any) => void;
-  'post:created': (data: Post) => void;
+  'post:created': (data: PostCreatedPayload) => void;
 }
 
 export interface ClientToServerEvents {

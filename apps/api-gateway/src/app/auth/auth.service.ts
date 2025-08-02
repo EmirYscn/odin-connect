@@ -20,9 +20,9 @@ import { Profile as GithubProfile } from 'passport-github2';
 import * as jwt from 'jsonwebtoken';
 
 import { UsersService } from '../users/users.service';
-import { UserWithProfile } from './types/prismaTypes';
+import { UserWithProfile } from '../common/types/prismaTypes';
 import { CreateUserDto } from '../users/dtos/create-user.dto';
-import { JwtObject } from './types/jwt';
+import { JwtObject } from '../common/types/jwt';
 import { ActiveUserType } from './interfaces/user.interface';
 
 @Injectable()
