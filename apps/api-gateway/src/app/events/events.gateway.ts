@@ -1,4 +1,4 @@
-import { Logger, OnModuleInit, UseGuards } from '@nestjs/common';
+import { Inject, Logger, OnModuleInit, UseGuards } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-import { ConfigService } from '@nestjs/config';
+import type { ConfigService, ConfigType } from '@nestjs/config';
 import type { AuthenticatedSocket } from './types/socket';
 import {
   handleUserSocketMappingOnConnnect,
@@ -23,19 +23,22 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '@odin-connect-monorepo/types';
+import appConfig from '../config/app.config';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:5173',
+    origin: process.env.CLIENT_URL,
     credentials: true,
   },
 })
 @UseGuards(WsJwtGuard)
 export class EventsGateway implements OnModuleInit {
   constructor(
-    private readonly configService: ConfigService,
+    // private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    @Inject(appConfig.KEY)
+    private readonly appConfiguration: ConfigType<typeof appConfig>
   ) {}
   @WebSocketServer()
   private server!: Server<ClientToServerEvents, ServerToClientEvents>;
