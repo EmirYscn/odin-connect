@@ -69,7 +69,7 @@ function PostInput({ placeholder, parentPostId }: PostInputProps) {
   };
 
   return (
-    <div className="flex flex-col w-full p-8 gap-4 shadow-sm rounded-2xl bg-[var(--color-grey-50)]">
+    <div className="flex flex-col w-full p-8 gap-4 shadow-sm rounded-2xl bg-[var(--color-grey-50)]/20">
       <div className="flex gap-2">
         <div className="align-top">
           <ProfileImage size="sm" imgSrc={user?.avatar} />

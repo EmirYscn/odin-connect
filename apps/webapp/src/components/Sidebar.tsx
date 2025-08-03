@@ -36,7 +36,7 @@ function Sidebar() {
 
   const handleMessagesClick = async () => {
     const serverToken = await getServerToken();
-    const token = Buffer.from(JSON.stringify(serverToken)).toString('base64');
+    const token = btoa(JSON.stringify(serverToken));
     console.log(
       `${env.messagingAppClientUrl}/checkAccountStatus?data=${token}`
     );
@@ -47,7 +47,7 @@ function Sidebar() {
     {
       name: 'Home',
       icon: <RiHomeLine />,
-      href: '/',
+      href: '/home',
     },
     {
       name: 'Explore',

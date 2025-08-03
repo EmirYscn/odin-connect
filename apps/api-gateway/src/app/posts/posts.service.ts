@@ -64,6 +64,11 @@ export class PostsService {
             profile: { select: { id: true } },
           },
         },
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
         medias: true,
         _count: {
           select: {
@@ -92,13 +97,14 @@ export class PostsService {
           ? { id: fullPost.user.profile.id }
           : null,
       },
+      likes: fullPost.likes,
       medias: fullPost.medias,
       _count: fullPost._count,
     };
 
     this.eventsGateway.broadcastToAll('post:created', postPayload);
 
-    return createdPost;
+    return fullPost;
   }
 
   async getForYouPosts(): Promise<Post[]> {

@@ -11,6 +11,7 @@ export function useSocketPostEvents() {
     if (!socket) return;
 
     const handlePostCreated = (data: PostCreatedPayload) => {
+      console.log('Post created event received:', data);
       queryClient.invalidateQueries({
         queryKey: ['posts'],
         exact: false,

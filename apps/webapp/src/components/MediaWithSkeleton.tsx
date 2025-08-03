@@ -28,21 +28,20 @@ export function MediaWithSkeleton({ src }: { src: string }) {
             {isGif ? (
               <img
                 src={src}
-                alt="Chat media"
-                className={`rounded-lg object-cover transition-opacity duration-300 ${
+                alt="Post media"
+                className={`rounded-lg h-full w-full object-cover transition-opacity duration-300 ${
                   isLoaded && !hasError ? 'opacity-100' : 'opacity-0'
                 }`}
                 onLoad={() => setIsLoaded(true)}
                 onError={() => setHasError(true)}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : (
               <img
                 src={src}
-                alt="Chat media"
+                alt="Post media"
                 onLoad={() => setIsLoaded(true)}
                 onError={() => setHasError(true)}
-                className={`rounded-lg object-cover transition-opacity duration-300 ${
+                className={`rounded-lg h-full w-full object-cover transition-opacity duration-300 ${
                   isLoaded && !hasError ? 'opacity-100' : 'opacity-0'
                 }`}
               />

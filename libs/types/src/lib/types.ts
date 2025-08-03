@@ -164,6 +164,9 @@ export interface PostCreatedPayload {
       id: string;
     } | null;
   };
+  likes: {
+    userId: string;
+  }[];
   medias?: {
     id: string;
     url: string;

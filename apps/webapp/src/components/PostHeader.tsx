@@ -22,7 +22,7 @@ function PostHeader({ post }: { post: PostType }) {
           className="font-semibold cursor-pointer hover:underline"
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/profile/${post.user.id}`);
+            navigate(`/profile/${post?.user?.profile?.id}`);
           }}
         >
           {post.user.username}

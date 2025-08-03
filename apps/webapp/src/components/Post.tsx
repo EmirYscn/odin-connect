@@ -34,7 +34,9 @@ function Post({ post, reply, isLoading }: PostProps) {
       className="flex flex-col gap-4 p-8 rounded-2xl mt-2 shadow-sm bg-[var(--color-grey-50)]/20 border-r border-b border-[var(--color-grey-300)]/80 w-full cursor-pointer"
     >
       <div className="flex gap-4">
-        <ProfileImage size="sm" imgSrc={post.user.avatar} />
+        <div>
+          <ProfileImage size="sm" imgSrc={post.user.avatar} />
+        </div>
 
         <div className="flex flex-col w-full gap-4">
           <PostHeader post={post} />

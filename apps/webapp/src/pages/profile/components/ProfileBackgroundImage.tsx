@@ -49,12 +49,12 @@ function ProfileBackgroundImage({
   }
 
   return (
-    <div className="relative h-50 w-full">
+    <div className="relative h-56 w-full">
       {src ? (
         <img
           src={src}
           alt="Profile background"
-          className="object-cover rounded-t-md"
+          className="object-cover w-full h-full rounded-t-md"
           onError={handleError}
         />
       ) : (
