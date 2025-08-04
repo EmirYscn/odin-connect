@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { USER_QUERY_KEY } from '../../lib/utils/constants';
@@ -12,7 +12,11 @@ function Auth() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const effectRan = useRef(false);
+
   useEffect(() => {
+    if (effectRan.current) return; // Prevent running twice
+    effectRan.current = true;
     const encodedData = searchParams.get('data');
     if (encodedData) {
       try {

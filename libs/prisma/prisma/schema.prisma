@@ -13,6 +13,13 @@ enum MEDIA_TYPE {
   AUDIO
 }
 
+enum NOTIFICATION_TYPE {
+  LIKE
+  COMMENT
+  FOLLOW
+  REPOST
+}
+
 model Profile {
   id       String  @id @default(uuid())
   bio      String? // User's bio
@@ -51,11 +58,13 @@ model User {
   reposts Repost[] // One-to-many relationship with Repost
   medias  Media[] // One-to-many relationship with Media
   profile Profile? // One-to-one relationship with Profile
+  notifications Notification[] // One-to-many relationship with Notification
 
   following    UserFollowing[] @relation("Following")
   followers    UserFollowing[] @relation("Followers")
   blockedUsers UserBlocked[]   @relation("BlockedUsers")
   blockedBy    UserBlocked[]   @relation("BlockedBy")
+  actorNotifications Notification[] @relation("NotificationActor")
 
   userSettings UserSettings?
 }
@@ -122,6 +131,7 @@ model Post {
   bookmarks Bookmark[] // One-to-many relationship with Bookmark
   reposts Repost[] // One-to-many relationship with Repost
   medias Media[] // One-to-many relationship with Media
+  notifications Notification[] // One-to-many relationship with Notification
 }
 
 model Like {
@@ -178,4 +188,23 @@ model Media {
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      NOTIFICATION_TYPE // Type of notification (e.g., like, comment, follow)
+  message   String // Notification message
+  read      Boolean @default(false) // Whether the notification has been read
+  createdAt DateTime @default(now())
+
+  actor   User   @relation("NotificationActor", fields: [actorId], references: [id])
+  actorId String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String? // If null, the notification is not related to a specific post
+
+  @@index([userId])
 }

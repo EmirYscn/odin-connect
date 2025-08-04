@@ -14,6 +14,7 @@ import { MediaModule } from './media/media.module';
 import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { EventsModule } from './events/events.module';
+import { NotificationClientModule } from './notification-client/notification-client.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -29,6 +30,7 @@ const ENV = process.env.NODE_ENV;
     LikesModule,
     BookmarksModule,
     EventsModule,
+    NotificationClientModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV.trim()}`,

@@ -1,0 +1,26 @@
+{
+  "name": "@odin-connect-monorepo/notification-service-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@odin-connect-monorepo/notification-service"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/notification-service-e2e/jest.config.ts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@odin-connect-monorepo/notification-service:build",
+          "@odin-connect-monorepo/notification-service:serve"
+        ]
+      }
+    }
+  }
+}

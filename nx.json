@@ -51,7 +51,10 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/api-gateway-e2e/**/*"]
+      "exclude": [
+        "apps/api-gateway-e2e/**/*",
+        "apps/notification-service-e2e/**/*"
+      ]
     },
     {
       "plugin": "@nx/react/router-plugin",

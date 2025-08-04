@@ -1,4 +1,5 @@
 export type MediaType = 'IMAGE' | 'VIDEO' | 'AUDIO';
+export type NotificationType = 'LIKE' | 'COMMENT' | 'FOLLOW' | 'REPOST';
 
 type DateFields = {
   readonly createdAt: string;
@@ -86,6 +87,22 @@ export type Profile = {
   userId: string;
   user: User;
 } & DateFields;
+
+export type Notification = {
+  id: string;
+  type: NotificationType; // Type of notification (like, comment, follow, repost)
+  message: string; // Notification message
+  read: boolean; // Whether the notification has been read
+
+  actorId: string; // User who performed the action that triggered the notification
+  actor: User; // User who performed the action
+
+  userId: string; // User who receives the notification
+  user: User;
+
+  postId?: string | null; // Associated post if applicable
+  post?: Post | null;
+} & Pick<DateFields, 'createdAt'>;
 
 export type User = {
   id: string;
