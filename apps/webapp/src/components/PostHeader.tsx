@@ -33,7 +33,7 @@ function PostHeader({ post }: { post: PostType }) {
       </div>
       <span className="font-semibold">·</span>
       <div>
-        <PostDate date={post.createdAt} />
+        <PostDate date={post.createdAt as string} />
       </div>
       {isCurrentUserPost && (
         <div className="ml-auto">

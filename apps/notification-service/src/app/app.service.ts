@@ -1,21 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { NotificationsService } from './notifications/notifications.service';
 import { PostLikedDto } from './dtos/post-liked.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { API_GATEWAY_RABBITMQ } from '@odin-connect-monorepo/types';
+import { emitMQEvent } from './common/utils/mq-functions';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(
+    private readonly notificationsService: NotificationsService,
+    @Inject(API_GATEWAY_RABBITMQ) private readonly client: ClientProxy
+  ) {}
 
-  handlePostLiked(data: PostLikedDto) {
+  async handlePostLiked(data: PostLikedDto) {
     const { actorId, postId } = data;
     console.log(
       `Handling post liked event for postId: ${postId} by actorId: ${actorId}`
     );
-    // get the post and actor details
-
     // create a notification
+    const notification =
+      await this.notificationsService.createPostRelatedNotification(
+        actorId,
+        postId
+      );
 
-    // emit notification event to the user
+    if (notification) {
+      // emit notification event to the user
+      emitMQEvent(this.client, 'notification:created', {
+        notificationId: notification.id,
+      });
+    }
     return;
   }
 }

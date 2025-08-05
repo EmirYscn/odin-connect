@@ -1,4 +1,4 @@
-import { Post, PostCreatedPayload } from '@odin-connect-monorepo/types';
+import { PostCreatedPayload } from '@odin-connect-monorepo/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useSocket } from '../../contexts/SocketContext';

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { api } from './axios';
 import { env } from '../env';
 import { User } from '@odin-connect-monorepo/types';
+// import { connectSocket, disconnectSocket } from './socket';
 import { connectSocket, disconnectSocket } from '../../contexts/SocketContext';
 
 const API_BASE_URL = env.apiUrl;
@@ -49,6 +50,7 @@ export const login = async (email: string, password: string): Promise<User> => {
     localStorage.setItem('accessToken', res.data.accessToken);
     localStorage.setItem('refreshToken', res.data.refreshToken);
 
+    // connectSocket();
     connectSocket();
     return res.data.user;
   } catch (error) {
@@ -63,7 +65,8 @@ export const logout = async (): Promise<void> => {
   // await api.post("/api/v1/auth/logout");
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
-  disconnectSocket(); // Disconnect the socket
+  // disconnectSocket(); // Disconnect the socket
+  disconnectSocket();
 };
 
 export const refreshToken = async (): Promise<{

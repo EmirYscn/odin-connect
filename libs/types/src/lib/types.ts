@@ -2,9 +2,9 @@ export type MediaType = 'IMAGE' | 'VIDEO' | 'AUDIO';
 export type NotificationType = 'LIKE' | 'COMMENT' | 'FOLLOW' | 'REPOST';
 
 type DateFields = {
-  readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt?: string | null;
+  readonly createdAt: Date | string;
+  readonly updatedAt: Date | string;
+  readonly deletedAt?: Date | string | null;
 };
 
 export type Media = {
@@ -201,6 +201,11 @@ export interface PostCreatedPayload {
 export interface ServerToClientEvents {
   'message:received': (data: any) => void;
   'post:created': (data: PostCreatedPayload) => void;
+  'notification:received': (data: Partial<Notification>) => void;
+  'post:liked': (data: { actorId: string; postId: string }) => void;
+  'post:replied': (data: { actorId: string; postId: string }) => void;
+  'post:reposted': (data: { actorId: string; postId: string }) => void;
+  'post:bookmarked': (data: { actorId: string; postId: string }) => void;
 }
 
 export interface ClientToServerEvents {

@@ -22,9 +22,6 @@ type FullPost = Prisma.PostGetPayload<{
 
 function handleIsLikedByField(post: FullPost, currentUserId: string) {
   if (!post || typeof post !== 'object') return post;
-  console.log('Post Id:', post.id);
-  console.log('Current User Id:', currentUserId);
-  console.log(post);
   const isLikedByCurrentUser = post.likes.some(
     (like) => like.userId === currentUserId
   );

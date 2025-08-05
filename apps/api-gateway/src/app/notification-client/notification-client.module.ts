@@ -1,6 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { NOTIFICATION_SERVICE_RABBITMQ } from '../../constants';
+import {
+  NOTIFICATION_SERVICE_RABBITMQ,
+  NOTIFICATION_SERVICE_NOTIFICATION_QUEUE,
+} from '@odin-connect-monorepo/types';
+import { NotificationEventsController } from './notification-events.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { EventsModule } from '../events/events.module';
 
 @Module({
   imports: [
@@ -10,14 +16,17 @@ import { NOTIFICATION_SERVICE_RABBITMQ } from '../../constants';
         transport: Transport.RMQ,
         options: {
           urls: ['amqp://user:password@localhost:5672'],
-          queue: 'notification_queue',
+          queue: NOTIFICATION_SERVICE_NOTIFICATION_QUEUE,
           queueOptions: {
             durable: true,
           },
         },
       },
     ]),
+    EventsModule,
+    NotificationsModule,
   ],
+  controllers: [NotificationEventsController],
   exports: [ClientsModule],
 })
 export class NotificationClientModule {}

@@ -7,9 +7,22 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app/app.module';
 import { Logger } from '@nestjs/common';
 import { GlobalExceptionFilter } from './app/common/filters/global-exception.filter';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { API_GATEWAY_NOTIFICATION_QUEUE } from '@odin-connect-monorepo/types';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://user:password@localhost:5672'],
+      queue: API_GATEWAY_NOTIFICATION_QUEUE,
+      queueOptions: {
+        durable: true,
+      },
+    },
+  });
   app.useGlobalFilters(new GlobalExceptionFilter());
 
   const configService = app.get(ConfigService);
@@ -28,6 +41,7 @@ async function bootstrap() {
     credentials: true,
   });
 
+  await app.startAllMicroservices();
   await app.listen(port);
 }
 bootstrap();

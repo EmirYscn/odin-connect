@@ -107,7 +107,6 @@ export class PostsController {
     if (!id) {
       throw new BadRequestException('Post ID is required');
     }
-    console.log('Deleting post with ID:', id, 'by user:', user.id);
     return this.postsService.deletePostById(id, user.id);
   }
 }

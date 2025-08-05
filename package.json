@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "prisma:generate": "prisma generate --schema=libs/prisma/prisma/schema.prisma",
-    "prisma:migrate": "prisma migrate dev --schema=libs/prisma/prisma/schema.prisma"
+    "prisma:migrate": "prisma migrate dev --schema=libs/prisma/prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema=libs/prisma/prisma/schema.prisma"
   },
   "private": true,
   "devDependencies": {

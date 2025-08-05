@@ -14,10 +14,15 @@ export type PostCommentedEvent = {
   commentId: string;
 };
 
+export type NotificationCreatedEvent = {
+  notificationId: string;
+};
+
 export interface NotificationEvent {
   'post:liked': PostLikedEvent;
-  'post:reposted': PostLikedEvent;
+  'post:replied': PostLikedEvent;
   'post:commented': PostLikedEvent;
+  'notification:created': NotificationCreatedEvent;
 }
 
 export type RabbitMQNotificationEvent = NotificationEvent;

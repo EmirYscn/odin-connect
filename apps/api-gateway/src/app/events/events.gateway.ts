@@ -78,16 +78,16 @@ export class EventsGateway implements OnModuleInit {
   }
 
   broadcastToRoom<E extends keyof ServerToClientEvents>(
-    room: string,
     event: E,
+    room: string,
     ...args: Parameters<ServerToClientEvents[E]>
   ) {
     this.server.to(room).emit(event, ...args);
   }
 
   broadcastToUser<E extends keyof ServerToClientEvents>(
-    userId: string,
     event: E,
+    userId: string,
     ...args: Parameters<ServerToClientEvents[E]>
   ) {
     const socketIds = userSocketMap.get(userId);

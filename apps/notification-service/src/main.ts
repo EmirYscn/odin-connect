@@ -8,6 +8,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { NOTIFICATION_SERVICE_NOTIFICATION_QUEUE } from '@odin-connect-monorepo/types';
+
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
@@ -15,7 +17,7 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: ['amqp://user:password@localhost:5672'],
-        queue: 'notification_queue',
+        queue: NOTIFICATION_SERVICE_NOTIFICATION_QUEUE,
         queueOptions: {
           durable: true,
         },

@@ -6,6 +6,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { USER_QUERY_KEY } from '../../lib/utils/constants';
 import { connectSocket } from '../../contexts/SocketContext';
 import Spinner from '../../components/Spinner';
+// import { connectSocket } from '../../lib/api/socket';
 
 function Auth() {
   const [searchParams] = useSearchParams();
@@ -31,6 +32,7 @@ function Auth() {
         localStorage.setItem('refreshToken', refreshToken);
 
         connectSocket();
+        // connectSocket();
 
         toast.success(
           `Successfully logged in ${provider ? `with ${provider}` : ''}`
