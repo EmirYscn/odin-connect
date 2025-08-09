@@ -3,7 +3,6 @@ import BackButton from '../../components/BackButton';
 import Post from '../../components/Post';
 import PostInput from '../../components/PostInput';
 import Posts from '../../components/Posts';
-import PostSkeleton from '../../components/PostSkeleton';
 import { usePost } from '../../hooks/usePost';
 import { useReplies } from '../../hooks/useReplies';
 import NotFound from './NotFound';
@@ -18,15 +17,21 @@ function PostPage() {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center gap-2 py-4">
-        <BackButton navigateTo="/home" />
-        <span className="text-xl font-semibold">Post</span>
+        <BackButton />
+        <span className="text-xl font-semibold text-[var(--color-grey-700)]/90">
+          Post
+        </span>
       </div>
-      {post && !isPostLoading ? <Post post={post} /> : <PostSkeleton />}
+      {post && <Post post={post} isLoading={isPostLoading} />}
       <div className="flex flex-col">
         <PostInput placeholder="Post your reply" parentPostId={id as string} />
-        {post && !isRepliesLoading && replies && replies.length > 0 && (
-          <Posts posts={replies} />
-        )}
+        {
+          <Posts
+            posts={replies}
+            isLoading={isRepliesLoading}
+            context="postReplies"
+          />
+        }
       </div>
     </div>
   );

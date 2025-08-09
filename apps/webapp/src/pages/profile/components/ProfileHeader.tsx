@@ -28,12 +28,12 @@ function ProfileHeader({ profile, isLoading }: ProfileHeaderProps) {
       <div className="relative">
         <ProfileBackgroundImage imgSrc={profile?.user.backgroundImage} />
         <div className="absolute left-4 -bottom-12">
-          <ProfileImage imgSrc={profile?.user.avatar} />
+          <ProfileImage imgSrc={profile?.user.avatar} context="profile" />
         </div>
       </div>
       {isCurrentUser ? <EditProfile /> : <div className="h-12" />}
 
-      <div className="p-2 flex flex-col gap-4">
+      <div className="p-2 flex flex-col gap-4 text-[var(--color-grey-700)]/80">
         <div className="flex flex-col gap-1">
           <span className="font-semibold text-xl">
             {profile?.user.displayName}

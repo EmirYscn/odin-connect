@@ -2,14 +2,24 @@ import { useState } from 'react';
 import Modal from './Modal';
 import MediaPreviewModal from './MediaPreviewModal';
 
-export function MediaWithSkeleton({ src }: { src: string }) {
+type MediaWithSkeletonProps = {
+  src: string;
+  variant?: 'profileImage' | 'postMedia';
+};
+
+export function MediaWithSkeleton({
+  src,
+  variant = 'postMedia',
+}: MediaWithSkeletonProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const isGif = src.split('?')[0].endsWith('.gif');
-
   return (
-    <div className="relative w-full aspect-video">
+    <div
+      className={`relative w-full ${
+        variant === 'profileImage' ? '' : 'aspect-video'
+      }`}
+    >
       {/* Skeleton or error placeholder */}
       {(!isLoaded || hasError) && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-300 rounded-lg animate-pulse">
@@ -22,30 +32,22 @@ export function MediaWithSkeleton({ src }: { src: string }) {
       <Modal>
         <Modal.Open opens="preview">
           <div
-            className="relative w-full h-full cursor-pointer aspect-video"
+            className={`relative w-full h-full cursor-pointer  ${
+              variant === 'profileImage' ? '' : 'aspect-video'
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
-            {isGif ? (
-              <img
-                src={src}
-                alt="Post media"
-                className={`rounded-lg h-full w-full object-cover transition-opacity duration-300 ${
-                  isLoaded && !hasError ? 'opacity-100' : 'opacity-0'
-                }`}
-                onLoad={() => setIsLoaded(true)}
-                onError={() => setHasError(true)}
-              />
-            ) : (
-              <img
-                src={src}
-                alt="Post media"
-                onLoad={() => setIsLoaded(true)}
-                onError={() => setHasError(true)}
-                className={`rounded-lg h-full w-full object-cover transition-opacity duration-300 ${
-                  isLoaded && !hasError ? 'opacity-100' : 'opacity-0'
-                }`}
-              />
-            )}
+            <img
+              src={src}
+              alt="Post media"
+              onLoad={() => setIsLoaded(true)}
+              onError={() => setHasError(true)}
+              className={` ${
+                variant === 'profileImage' ? 'rounded-full' : 'rounded-lg'
+              } h-full w-full object-cover transition-opacity duration-300 ${
+                isLoaded && !hasError ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
           </div>
         </Modal.Open>
         <Modal.Window

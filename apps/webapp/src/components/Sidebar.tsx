@@ -18,6 +18,7 @@ import { useUser } from '../hooks/useUser';
 import { getServerToken } from '../lib/api/auth';
 import { env } from '../lib/env';
 import { Link } from 'react-router-dom';
+import { useUnreadNotificationsCount } from '../hooks/useUnreadNotificationsCount';
 
 type SidebarItem = {
   name: string;
@@ -33,13 +34,14 @@ function Sidebar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { logout, isPending } = useLogout();
   const { user } = useUser();
+  const { count } = useUnreadNotificationsCount();
 
   const handleMessagesClick = async () => {
     const serverToken = await getServerToken();
     const token = btoa(JSON.stringify(serverToken));
-    console.log(
-      `${env.messagingAppClientUrl}/checkAccountStatus?data=${token}`
-    );
+    // console.log(
+    //   `${env.messagingAppClientUrl}/checkAccountStatus?data=${token}`
+    // );
     window.location.href = `${env.messagingAppClientUrl}/checkAccountStatus?data=${token}`;
   };
 
@@ -78,10 +80,10 @@ function Sidebar() {
     },
   ];
   return (
-    <div className="flex h-full md:flex-col gap-4 md:py-2 px-4 justify-center md:justify-normal">
-      <div className="hidden md:flex items-center gap-2 p-2 ">
+    <div className="flex justify-center h-full gap-4 px-4 md:flex-col md:py-2 md:justify-normal">
+      <div className="items-center hidden gap-4 p-2 md:flex ">
         <Logo size="xs" />
-        <span className="hidden lg:block font-semibold text-xl">
+        <span className="hidden lg:block font-semibold text-xl text-[var(--color-grey-700)]">
           OdinConnect
         </span>
       </div>
@@ -90,7 +92,7 @@ function Sidebar() {
         <Searchbar />
       </div>
 
-      <div className="flex md:flex-col p-2 gap-4 md:flex-1 shadow-sm">
+      <div className="flex gap-4 p-2 shadow-sm md:flex-col md:flex-1">
         {sidebarItems.map((item) =>
           item.isExternal ? (
             <a
@@ -107,7 +109,13 @@ function Sidebar() {
               to={item.href || '#'}
               className={`flex items-center text-[var(--color-grey-600)] rounded-md hover:bg-[var(--color-grey-100)]/30  ${item.class}`}
             >
-              <Button icon={item.icon} className="!text-2xl" />
+              <Button icon={item.icon} className="!text-2xl !relative">
+                {item.name === 'Notifications' && count && count > 0 && (
+                  <span className="absolute top-0 px-1 text-xs text-white rounded-full right-1 bg-red-500/80">
+                    {count > 99 ? '99+' : count}
+                  </span>
+                )}
+              </Button>
               <span className="hidden lg:block">{item.name}</span>
             </Link>
           )
@@ -123,17 +131,17 @@ function Sidebar() {
           >
             <div
               ref={profileRef}
-              className="hidden items-center gap-4 px-4 py-4 md:flex shadow-lg rounded-full hover:bg-[var(--color-grey-100)]/30 cursor-pointer transition-all duration-200 ease-in-out"
+              className="hidden items-center gap-4 px-4 py-4 md:flex shadow-lg rounded-full hover:bg-[var(--color-grey-100)]/30 cursor-pointer transition-all duration-200 ease-in-out text-[var(--color-grey-700)]"
               id="sidebarProfile"
             >
-              <div className="flex w-full lg:w-auto justify-center lg:justify-start">
+              <div className="flex justify-center w-full lg:w-auto lg:justify-start">
                 <ProfileImage size="xs" imgSrc={user?.avatar} />
               </div>
-              <div className="hidden flex-col lg:flex text-start">
+              <div className="flex-col hidden lg:flex text-start">
                 <span className="font-semibold">{user?.displayName}</span>
-                <span className="">@{user?.username}</span>
+                <span className="opacity-80">@{user?.username}</span>
               </div>
-              <span className="hidden lg:flex ml-auto">
+              <span className="hidden ml-auto lg:flex">
                 <BsThreeDots />
               </span>
             </div>

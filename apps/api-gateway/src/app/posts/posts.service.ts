@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -13,15 +14,161 @@ import { ProfileService } from '../profile/profile.service';
 import { MediaService } from '../media/media.service';
 import { EventsGateway } from '../events/events.gateway';
 import { PostCreatedPayload } from '@odin-connect-monorepo/types';
+import { NotificationClientService } from '../notification-client/notification-client.service';
 
 @Injectable()
 export class PostsService {
+  private postInclude = {
+    user: {
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        avatar: true,
+        profile: true,
+      },
+    },
+    likes: {
+      select: {
+        userId: true,
+      },
+    },
+    reposts: {
+      select: {
+        userId: true,
+      },
+    },
+    medias: {
+      select: {
+        id: true,
+        url: true,
+        type: true,
+      },
+    },
+    _count: {
+      select: {
+        replies: true,
+        likes: true,
+        bookmarks: true,
+        reposts: true,
+      },
+    },
+  };
+
+  private postWithRepostOfInclude = {
+    ...this.postInclude,
+    repostOf: {
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        likes: { select: { userId: true } },
+        reposts: { select: { userId: true } },
+        user: {
+          select: {
+            id: true,
+            username: true,
+            displayName: true,
+            avatar: true,
+            profile: true,
+          },
+        },
+        medias: {
+          select: {
+            id: true,
+            url: true,
+            type: true,
+          },
+        },
+        _count: {
+          select: {
+            replies: true,
+            likes: true,
+            bookmarks: true,
+            reposts: true,
+          },
+        },
+        repostOf: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            likes: { select: { userId: true } },
+            reposts: { select: { userId: true } },
+            user: {
+              select: {
+                id: true,
+                username: true,
+                displayName: true,
+                avatar: true,
+                profile: true,
+              },
+            },
+            medias: {
+              select: {
+                id: true,
+                url: true,
+                type: true,
+              },
+            },
+            _count: {
+              select: {
+                replies: true,
+                likes: true,
+                bookmarks: true,
+                reposts: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
+  private postWithParentInclude = {
+    ...this.postInclude,
+    parent: {
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        likes: { select: { userId: true } },
+        reposts: { select: { userId: true } },
+        user: {
+          select: {
+            id: true,
+            username: true,
+            displayName: true,
+            avatar: true,
+            profile: true,
+          },
+        },
+        medias: {
+          select: {
+            id: true,
+            url: true,
+            type: true,
+          },
+        },
+        _count: {
+          select: {
+            replies: true,
+            likes: true,
+            bookmarks: true,
+            reposts: true,
+          },
+        },
+      },
+    },
+  };
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventsGateway: EventsGateway,
     private readonly usersService: UsersService,
     private readonly profileService: ProfileService,
-    private readonly mediaService: MediaService
+    private readonly mediaService: MediaService,
+    private readonly notificationPub: NotificationClientService
   ) {}
 
   async createPost(
@@ -54,31 +201,7 @@ export class PostsService {
 
     const fullPost = await this.prisma.post.findUnique({
       where: { id: createdPost.id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            displayName: true,
-            avatar: true,
-            profile: { select: { id: true } },
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        medias: true,
-        _count: {
-          select: {
-            replies: true,
-            likes: true,
-            bookmarks: true,
-            reposts: true,
-          },
-        },
-      },
+      include: this.postWithRepostOfInclude,
     });
     if (!fullPost) {
       throw new InternalServerErrorException('Failed to retrieve created post');
@@ -86,7 +209,7 @@ export class PostsService {
 
     const postPayload: PostCreatedPayload = {
       id: fullPost.id,
-      content: fullPost.content,
+      content: fullPost.content!,
       createdAt: fullPost.createdAt.toISOString(),
       user: {
         id: fullPost.user.id,
@@ -107,43 +230,99 @@ export class PostsService {
     return fullPost;
   }
 
+  async repostPost(
+    userId: string,
+    postId: string,
+    data?: CreatePostDto,
+    postMedias?: Express.Multer.File[]
+  ) {
+    // Validate user exists
+    const user = await this.usersService.getUserById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Validate post exists
+    const hasReposted = await this.prisma.post.findFirst({
+      where: {
+        userId: user.id,
+        repostOfId: postId,
+      },
+    });
+
+    if (hasReposted) {
+      await this.prisma.post.delete({
+        where: {
+          id: hasReposted.id,
+        },
+      });
+      return { deleted: true };
+    }
+
+    const createdPost = await this.prisma.post.create({
+      data: {
+        ...data,
+        userId: user.id, // Ensure the post is associated with the correct user
+        repostOfId: postId, // Set the repostOfId to the original post ID
+      },
+    });
+
+    if (postMedias && postMedias.length > 0) {
+      // create post medias by calling the media service
+      await this.mediaService.createPostMedia(
+        createdPost.id,
+        user.id,
+        postMedias
+      );
+    }
+
+    const fullPost = await this.prisma.post.findUnique({
+      where: { id: createdPost.id },
+      include: this.postInclude,
+    });
+
+    if (!fullPost) {
+      throw new InternalServerErrorException('Failed to retrieve created post');
+    }
+
+    const postPayload: PostCreatedPayload = {
+      id: fullPost.id,
+      content: fullPost.content!,
+      createdAt: fullPost.createdAt.toISOString(),
+      user: {
+        id: fullPost.user.id,
+        username: fullPost.user.username,
+        displayName: fullPost.user.displayName ?? null,
+        avatar: fullPost.user.avatar ?? null,
+        profile: fullPost.user.profile
+          ? { id: fullPost.user.profile.id }
+          : null,
+      },
+      likes: fullPost.likes,
+      medias: fullPost.medias,
+      _count: fullPost._count,
+    };
+
+    // Try to create a notification for the repost event
+    await this.notificationPub.tryCreatePostRelatedNotification(
+      userId,
+      postId,
+      'post:reposted',
+      'REPOST'
+    );
+
+    this.eventsGateway.broadcastToAll('post:created', postPayload);
+
+    return fullPost;
+  }
+
   async getForYouPosts(): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
       where: {
         parentId: null, // Only get top-level posts
         published: true,
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            displayName: true,
-            avatar: true,
-            profile: true,
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        medias: {
-          select: {
-            id: true,
-            url: true,
-            type: true,
-          },
-        },
-        _count: {
-          select: {
-            replies: true,
-            likes: true,
-            bookmarks: true,
-            reposts: true,
-          },
-        },
-      },
+      include: this.postWithRepostOfInclude,
       orderBy: {
         createdAt: 'desc',
       },
@@ -174,37 +353,7 @@ export class PostsService {
         parentId: null, // Only get top-level posts
         published: true,
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            displayName: true,
-            avatar: true,
-            profile: true,
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        medias: {
-          select: {
-            id: true,
-            url: true,
-            type: true,
-          },
-        },
-        _count: {
-          select: {
-            replies: true,
-            likes: true,
-            bookmarks: true,
-            reposts: true,
-          },
-        },
-      },
+      include: this.postWithRepostOfInclude,
       orderBy: {
         createdAt: 'desc',
       },
@@ -217,83 +366,26 @@ export class PostsService {
     if (!profile) {
       throw new UnauthorizedException('User not found');
     }
-    return await this.prisma.post.findMany({
+    const userId = profile.user.id;
+    const posts = await this.prisma.post.findMany({
       where: {
-        userId: profile.user.id,
+        userId,
         parentId: null, // Only get top-level posts
         published: true,
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            displayName: true,
-            avatar: true,
-            profile: true,
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        medias: {
-          select: {
-            id: true,
-            url: true,
-            type: true,
-          },
-        },
-        _count: {
-          select: {
-            replies: true,
-            likes: true,
-            bookmarks: true,
-            reposts: true,
-          },
-        },
-      },
+      include: this.postWithRepostOfInclude,
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    return posts;
   }
 
   async getPostById(id: string): Promise<Post> {
     const post = await this.prisma.post.findUnique({
       where: { id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            displayName: true,
-            avatar: true,
-            profile: true,
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        medias: {
-          select: {
-            id: true,
-            url: true,
-            type: true,
-          },
-        },
-        _count: {
-          select: {
-            replies: true,
-            likes: true,
-            bookmarks: true,
-            reposts: true,
-          },
-        },
-      },
+      include: this.postWithRepostOfInclude,
     });
 
     if (!post) {
@@ -306,37 +398,7 @@ export class PostsService {
   async getRepliesByPostId(postId: string): Promise<Post[]> {
     const replies = await this.prisma.post.findMany({
       where: { parentId: postId },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            displayName: true,
-            avatar: true,
-            profile: true,
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        medias: {
-          select: {
-            id: true,
-            url: true,
-            type: true,
-          },
-        },
-        _count: {
-          select: {
-            replies: true,
-            likes: true,
-            bookmarks: true,
-            reposts: true,
-          },
-        },
-      },
+      include: this.postInclude,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -356,65 +418,7 @@ export class PostsService {
           not: null, // Only get replies (posts with a parent)
         },
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            displayName: true,
-            avatar: true,
-            profile: true,
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        medias: {
-          select: {
-            id: true,
-            url: true,
-            type: true,
-          },
-        },
-        parent: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                displayName: true,
-                avatar: true,
-                profile: true,
-              },
-            },
-            medias: {
-              select: {
-                id: true,
-                url: true,
-                type: true,
-              },
-            },
-            _count: {
-              select: {
-                replies: true,
-                likes: true,
-                bookmarks: true,
-                reposts: true,
-              },
-            },
-          },
-        },
-        _count: {
-          select: {
-            replies: true,
-            likes: true,
-            bookmarks: true,
-            reposts: true,
-          },
-        },
-      },
+      include: this.postWithParentInclude,
       orderBy: { createdAt: 'desc' },
     });
     return replies;

@@ -9,6 +9,17 @@ export class NotificationsService {
   async getNotifications(userId: string) {
     return this.prisma.notification.findMany({
       where: { userId },
+      include: {
+        actor: {
+          select: {
+            id: true,
+            username: true,
+            displayName: true,
+            avatar: true,
+            profile: { select: { id: true } },
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -46,18 +57,9 @@ export class NotificationsService {
     return !!existingNotification;
   }
 
-  //   async checkNotificationCreatedWit(
-  //     userId: string,
-  //     postId: string,
-  //     type: string
-  //   ): Promise<Notification | null> {
-  //     return this.prisma.notification.findFirst({
-  //       where: {
-  //         userId,
-  //         postId,
-  //         type,
-  //       },
-  //       orderBy: { createdAt: 'desc' },
-  //     });
-  //   }
+  async getUnreadNotificationsCount(userId: string): Promise<number> {
+    return this.prisma.notification.count({
+      where: { userId, read: false },
+    });
+  }
 }

@@ -15,7 +15,7 @@ enum MEDIA_TYPE {
 
 enum NOTIFICATION_TYPE {
   LIKE
-  COMMENT
+  REPLY
   FOLLOW
   REPOST
 }
@@ -55,7 +55,7 @@ model User {
   posts   Post[] // One-to-many relationship with Post
   likes   Like[] // One-to-many relationship with Like
   bookmarks Bookmark[] // One-to-many relationship with Bookmark
-  reposts Repost[] // One-to-many relationship with Repost
+  // reposts Repost[] // One-to-many relationship with Repost
   medias  Media[] // One-to-many relationship with Media
   profile Profile? // One-to-one relationship with Profile
   notifications Notification[] // One-to-many relationship with Notification
@@ -112,7 +112,7 @@ model UserSettings {
 
 model Post {
   id      String @id @default(uuid())
-  content String
+  content String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -126,10 +126,14 @@ model Post {
   parent    Post?     @relation("PostReplies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId  String?   // If null, it's a top-level post; if set, it's a reply/comment
 
+  repostOf   Post?    @relation("PostReposts", fields: [repostOfId], references: [id], onDelete: Cascade)
+  repostOfId String?  // If set, this post is a repost (with or without comment) of another post
+  reposts Post[] @relation("PostReposts") // All posts that are reposts of this post
+
   replies   Post[]    @relation("PostReplies") // All replies/comments to this post
   likes   Like[] // One-to-many relationship with Like
+  // reposts Repost[]
   bookmarks Bookmark[] // One-to-many relationship with Bookmark
-  reposts Repost[] // One-to-many relationship with Repost
   medias Media[] // One-to-many relationship with Media
   notifications Notification[] // One-to-many relationship with Notification
 }
@@ -160,18 +164,18 @@ model Bookmark {
   @@unique([userId, postId])
 }
 
-model Repost {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
+// model Repost {
+//   id        String   @id @default(uuid())
+//   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
+//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   userId    String
 
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
+//   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+//   postId    String
 
-  @@unique([userId, postId]) // A user can retweet a post only once
-}
+//   @@unique([userId, postId]) // A user can retweet a post only once
+// }
 
 model Media {
   id   String     @id @default(uuid())

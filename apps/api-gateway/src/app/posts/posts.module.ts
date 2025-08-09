@@ -7,6 +7,7 @@ import { UsersModule } from '../users/users.module';
 import { ProfileModule } from '../profile/profile.module';
 import { MediaModule } from '../media/media.module';
 import { EventsModule } from '../events/events.module';
+import { NotificationClientModule } from '../notification-client/notification-client.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EventsModule } from '../events/events.module';
     UsersModule,
     ProfileModule,
     MediaModule,
+    NotificationClientModule,
   ],
   providers: [PostsService],
   controllers: [PostsController],

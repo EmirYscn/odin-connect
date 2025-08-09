@@ -3,15 +3,18 @@ import Button from './Button';
 import { FaHeart, FaRegBookmark, FaRegHeart } from 'react-icons/fa';
 import { Post } from '@odin-connect-monorepo/types';
 import { useLikePost } from '../hooks/useLikePost';
+import { useRepostPost } from '../hooks/useRepostPost';
 
 function PostActions({ post }: { post: Post }) {
   const { likes, replies, bookmarks, reposts } = post._count || {};
   const { likePost, isPending: isHandlingLike } = useLikePost();
+  const { repostPost, isPending: isHandlingRepost } = useRepostPost();
 
   const isLiked = post.isLikedByCurrentUser;
+  const isReposted = post.isRepostedByCurrentUser;
 
   return (
-    <div className="flex items-center gap-10">
+    <div className="flex items-center gap-10 text-[var(--color-grey-600)]/80">
       <div className="flex items-center">
         <Button
           icon={
@@ -45,7 +48,14 @@ function PostActions({ post }: { post: Post }) {
         <Button
           icon={<BiRepost className="text-lg" />}
           size="small"
-          className="hover:text-green-500/80 hover:bg-green-500/10 !rounded-full !p-2"
+          className={`${
+            isReposted && 'text-green-500'
+          } hover:text-green-500/80 hover:bg-green-500/10 !rounded-full !p-2`}
+          onClick={(e) => {
+            e.stopPropagation();
+            repostPost(post.id);
+          }}
+          disabled={isHandlingRepost}
         />
         <span>{reposts}</span>
       </div>

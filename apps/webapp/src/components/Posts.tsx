@@ -6,9 +6,17 @@ import { Post as PostType } from '@odin-connect-monorepo/types';
 type PostsProps = {
   posts: PostType[] | undefined;
   isLoading?: boolean;
+  context?: 'feed' | 'profile' | 'profile_replies' | 'postReplies';
 };
 
-function Posts({ posts, isLoading }: PostsProps) {
+const noPostMessages = {
+  feed: 'Looks like your feed is empty. Start by creating a new post or follow others to see their updates!',
+  profile: 'This user has no posts yet.',
+  profile_replies: 'This user has not replied to any posts yet.',
+  postReplies: 'No replies yet. Be the first to reply!',
+};
+
+function Posts({ posts, isLoading, context = 'feed' }: PostsProps) {
   if (isLoading) {
     return (
       <>
@@ -18,6 +26,7 @@ function Posts({ posts, isLoading }: PostsProps) {
       </>
     );
   }
+
   return (
     <div className="w-full flex flex-col">
       {posts && posts.length > 0 ? (
@@ -29,8 +38,7 @@ function Posts({ posts, isLoading }: PostsProps) {
             No posts yet
           </h2>
           <p className="text-[var(--color-grey-600)] text-center max-w-xs">
-            Looks like your feed is empty. Start by creating a new post or
-            follow others to see their updates!
+            {noPostMessages[context]}
           </p>
         </div>
       )}

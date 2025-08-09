@@ -91,3 +91,17 @@ export const likePost = async (postId: string) => {
     throw new Error('An unexpected error occurred.');
   }
 };
+
+export const repostPost = async (postId: string) => {
+  try {
+    await api.post(`/posts/${postId}/repost`);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const serverMessage =
+        error.response?.data?.message || "Couldn't repost post";
+      throw new Error(serverMessage);
+    }
+
+    throw new Error('An unexpected error occurred.');
+  }
+};

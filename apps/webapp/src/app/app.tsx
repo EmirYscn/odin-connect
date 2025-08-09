@@ -7,6 +7,7 @@ import Login from '../pages/login/Login';
 import Signup from '../pages/signup/Signup';
 import Auth from '../pages/auth/Auth';
 import { useSocketNotificationEvents } from '../hooks/sockets/useSocketNotificationEvents';
+import Notifications from '../pages/notifications/Notifications';
 
 export function App() {
   useSocketNotificationEvents();
@@ -18,6 +19,7 @@ export function App() {
         <Route path="/home" index element={<Home />} />
         <Route path="/posts/:id" element={<PostPage />} />
         <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Route>
 
       <Route path="/auth" element={<Auth />} />

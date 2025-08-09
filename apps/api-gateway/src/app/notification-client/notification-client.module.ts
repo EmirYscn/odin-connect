@@ -7,6 +7,7 @@ import {
 import { NotificationEventsController } from './notification-events.controller';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { EventsModule } from '../events/events.module';
+import { NotificationClientService } from './notification-client.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { EventsModule } from '../events/events.module';
     NotificationsModule,
   ],
   controllers: [NotificationEventsController],
-  exports: [ClientsModule],
+  exports: [ClientsModule, NotificationClientService],
+  providers: [NotificationClientService],
 })
 export class NotificationClientModule {}

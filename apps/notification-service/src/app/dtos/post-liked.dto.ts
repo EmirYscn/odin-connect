@@ -1,8 +1,3 @@
-import { IsString } from 'class-validator';
+import { PostEventDto } from './post-event.dto';
 
-export class PostLikedDto {
-  @IsString()
-  actorId!: string;
-  @IsString()
-  postId!: string;
-}
+export class PostLikedDto extends PostEventDto {}

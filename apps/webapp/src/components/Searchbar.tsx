@@ -1,4 +1,4 @@
-import { FaArrowLeft, FaSearch } from "react-icons/fa";
+import { FaArrowLeft, FaSearch } from 'react-icons/fa';
 
 type SearchbarProps = {
   placeholder?: string;
@@ -7,15 +7,15 @@ type SearchbarProps = {
 };
 
 function Searchbar({
-  placeholder = "Search..",
+  placeholder = 'Search..',
   searchValue,
   setSearchValue,
 }: SearchbarProps) {
   return (
-    <div className="flex gap-4 items-center px-4 py-1 rounded-full border-1 border-[var(--color-grey-300)] focus-within:border-gray-500">
+    <div className="flex gap-4 items-center px-4 py-1 rounded-full border-1 border-[var(--color-grey-700)]/30 focus-within:border-[var(--color-grey-700)]/50 text-[var(--color-grey-700)]/90">
       <label
         htmlFor="searchbar"
-        className="cursor-pointer text-[var(--color-grey-400)] focus:border-gray-500"
+        className="cursor-pointer text-[var(--color-grey-700)]/90 focus:border-[var(--color-grey-700)]/50"
       >
         {searchValue ? <FaArrowLeft /> : <FaSearch />}
       </label>

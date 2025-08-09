@@ -21,21 +21,21 @@ type FullPost = Prisma.PostGetPayload<{
   };
 }>;
 
-function handleIsLikedByField(post: FullPost, currentUserId: string): any {
+function handleIsRepostedByField(post: FullPost, currentUserId: string): any {
   if (!post || typeof post !== 'object') return post;
-  const isLikedByCurrentUser = Array.isArray(post.likes)
-    ? post.likes.some((like) => like.userId === currentUserId)
+  const isRepostedByCurrentUser = Array.isArray(post.reposts)
+    ? post.reposts.some((repost) => repost.userId === currentUserId)
     : false;
 
   // Recursively handle nested repostOf
   let repostOf = post.repostOf;
   if (repostOf && typeof repostOf === 'object') {
-    repostOf = handleIsLikedByField(repostOf as FullPost, currentUserId);
+    repostOf = handleIsRepostedByField(repostOf as FullPost, currentUserId);
   }
 
   return {
     ...post,
-    isLikedByCurrentUser,
+    isRepostedByCurrentUser,
     ...(repostOf && { repostOf }), // Only include if exists
   };
 }
@@ -43,7 +43,7 @@ function handleIsLikedByField(post: FullPost, currentUserId: string): any {
 type Data = Post[] | Post;
 
 @Injectable()
-export class isLikedByCurrentUserInterceptor implements NestInterceptor {
+export class isRepostedByCurrentUser implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler<Post[] | Post>
@@ -55,11 +55,11 @@ export class isLikedByCurrentUserInterceptor implements NestInterceptor {
       map((data: Data) => {
         if (Array.isArray(data)) {
           return data.map((post) =>
-            handleIsLikedByField(post as FullPost, currentUserId)
+            handleIsRepostedByField(post as FullPost, currentUserId)
           );
         }
         if (data && typeof data === 'object') {
-          return handleIsLikedByField(data as FullPost, currentUserId);
+          return handleIsRepostedByField(data as FullPost, currentUserId);
         }
         return data;
       })

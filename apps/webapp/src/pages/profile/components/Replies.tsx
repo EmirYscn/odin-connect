@@ -1,4 +1,4 @@
-import Post from '../../../components/Post';
+import Posts from '../../../components/Posts';
 import { useProfileReplies } from '../../../hooks/useProfileReplies';
 
 type RepliesProps = {
@@ -11,15 +11,11 @@ function Replies({ profileId }: RepliesProps) {
   );
 
   return (
-    replies &&
-    replies.length > 0 &&
-    replies.map((reply) => (
-      <Post
-        key={`${reply.id}-${reply?.parent?.id}`}
-        post={reply.parent!}
-        reply={reply}
-      />
-    ))
+    <Posts
+      posts={replies}
+      isLoading={isLoadingReplies}
+      context="profile_replies"
+    />
   );
 }
 

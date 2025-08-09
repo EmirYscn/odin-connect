@@ -12,7 +12,6 @@ export function useSocketNotificationEvents() {
     if (!socket) return;
 
     const handleNotificationReceived = (data: Partial<Notification>) => {
-      console.log('Notification created event received: ', data);
       queryClient.invalidateQueries({
         queryKey: ['notifications'],
         exact: false,

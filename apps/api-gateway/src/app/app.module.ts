@@ -7,7 +7,7 @@ import envValidation from './config/env.validation';
 import { PrismaModule } from '@odin-connect-monorepo/prisma';
 import { UsersModule } from './users/users.module';
 import { SupabaseModule } from './supabase/supabase.module';
-import { RepostsModule } from './reposts/reposts.module';
+// import { RepostsModule } from './reposts/reposts.module';
 import { ProfileModule } from './profile/profile.module';
 import { PostsModule } from './posts/posts.module';
 import { MediaModule } from './media/media.module';
@@ -24,7 +24,7 @@ const ENV = process.env.NODE_ENV;
     PrismaModule,
     SupabaseModule,
     UsersModule,
-    RepostsModule,
+    // RepostsModule,
     ProfileModule,
     PostsModule,
     MediaModule,

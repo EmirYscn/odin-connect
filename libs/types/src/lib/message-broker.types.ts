@@ -8,7 +8,7 @@ export type PostRepostedEvent = {
   postId: string;
 };
 
-export type PostCommentedEvent = {
+export type PostRepliedEvent = {
   actorId: string;
   postId: string;
   commentId: string;
@@ -20,8 +20,8 @@ export type NotificationCreatedEvent = {
 
 export interface NotificationEvent {
   'post:liked': PostLikedEvent;
-  'post:replied': PostLikedEvent;
-  'post:commented': PostLikedEvent;
+  'post:replied': PostRepliedEvent;
+  'post:reposted': PostRepostedEvent;
   'notification:created': NotificationCreatedEvent;
 }
 

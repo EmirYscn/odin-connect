@@ -1,139 +1,124 @@
+import { useNavigate } from 'react-router-dom';
 import { Post as PostType } from '@odin-connect-monorepo/types';
+
 import PostActions from './PostActions';
 import PostHeader from './PostHeader';
-import { MediaWithSkeleton } from './MediaWithSkeleton';
-import { useState } from 'react';
-import Button from './Button';
-import { MAX_POST_CONTENT_LENGTH } from '../lib/utils/constants';
 import ProfileImage from './ProfileImage';
 import PostSkeleton from './PostSkeleton';
-import { useNavigate } from 'react-router-dom';
+import PostContent from './PostContent';
+import PostMedias from './PostMedias';
+import { BiRepost } from 'react-icons/bi';
 
 type PostProps = {
   post: PostType;
-  reply?: PostType;
   isLoading?: boolean;
+  isParentPost?: boolean; // to indicate if this is a parent post
+  isRepostOf?: boolean; // to indicate if this is a repostof
 };
 
-function Post({ post, reply, isLoading }: PostProps) {
-  const [showFull, setShowFull] = useState(false);
+function Post({ post, isLoading, isParentPost, isRepostOf }: PostProps) {
   const navigate = useNavigate();
 
-  const isLong = post.content.length > MAX_POST_CONTENT_LENGTH;
-  const displayedContent = showFull
-    ? post.content
-    : post.content.slice(0, MAX_POST_CONTENT_LENGTH);
+  const hasRepostOf = post.repostOfId && post.repostOf;
+  const hasContent = post.content || post.medias?.length > 0;
+
+  const isRepostWithNoContent = hasRepostOf && !hasContent;
 
   if (isLoading) {
     return <PostSkeleton />;
   }
 
-  return (
-    <div
-      onClick={() => navigate(`/posts/${post.id}`)}
-      className="flex flex-col gap-4 p-8 rounded-2xl mt-2 shadow-sm bg-[var(--color-grey-50)]/20 border-r border-b border-[var(--color-grey-300)]/80 w-full cursor-pointer"
-    >
-      <div className="flex gap-4">
-        <div>
-          <ProfileImage size="sm" imgSrc={post.user.avatar} />
-        </div>
+  if (isRepostWithNoContent) {
+    const repostOf = post.repostOf as PostType;
 
-        <div className="flex flex-col w-full gap-4">
-          <PostHeader post={post} />
-          <p className="break-all">
-            {displayedContent}
-            {!showFull && isLong && (
-              <>
-                {' '}
-                <Button
-                  variation="text"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowFull(true);
-                  }}
-                  className="mt-1"
-                >
-                  Show more
-                </Button>
-              </>
-            )}
-            {showFull && isLong && (
-              <Button
-                variation="text"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowFull(false);
-                }}
-                className="mt-1"
-              >
-                Show less
-              </Button>
-            )}
-          </p>
-          <div
-            className={`grid gap-2 ${
-              post?.medias?.length === 1 ? 'grid-cols-1' : 'grid-cols-2'
-            }`}
+    return (
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate(`/posts/${repostOf.id}`);
+        }}
+        className="flex flex-col gap-4 p-8 rounded-2xl mt-2 shadow-sm bg-[var(--color-grey-50)]/20 border-r border-b border-[var(--color-grey-300)]/80 w-full cursor-pointer"
+      >
+        <div className="flex items-center gap-1 text-sm text-[var(--color-grey-700)]/80">
+          <BiRepost />
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/profile/${post?.user?.profile?.id}`);
+            }}
+            className="cursor-pointer hover:underline"
           >
-            {post?.medias?.length > 0 &&
-              post.medias.map((media) => (
-                <MediaWithSkeleton key={media.id} src={media.url} />
-              ))}
-          </div>
-
-          <PostActions post={post} />
+            {post.user.displayName} has reposted
+          </span>
         </div>
-      </div>
-      {reply && (
         <div className="flex gap-4">
-          <ProfileImage size="sm" imgSrc={reply.user.avatar} />
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/profile/${repostOf?.user?.profile?.id}`);
+            }}
+            className="transition-opacity duration-200 hover:opacity-80"
+          >
+            <ProfileImage size="sm" imgSrc={repostOf.user.avatar} />
+          </div>
 
           <div className="flex flex-col w-full gap-4">
-            <PostHeader post={reply} />
-            <p className="break-all">
-              {displayedContent}
-              {!showFull && isLong && (
-                <>
-                  {' '}
-                  <Button
-                    variation="text"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowFull(true);
-                    }}
-                    className="mt-1"
-                  >
-                    Show more
-                  </Button>
-                </>
-              )}
-              {showFull && isLong && (
-                <Button
-                  variation="text"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowFull(false);
-                  }}
-                  className="mt-1"
-                >
-                  Show less
-                </Button>
-              )}
-            </p>
-            <div
-              className={`grid gap-2 ${
-                reply?.medias?.length === 1 ? 'grid-cols-1' : 'grid-cols-2'
-              }`}
-            >
-              {reply?.medias?.length > 0 &&
-                reply.medias.map((media) => (
-                  <MediaWithSkeleton key={media.id} src={media.url} />
-                ))}
-            </div>
-            <PostActions post={reply} />
+            <PostHeader post={repostOf} />
+            <PostContent content={repostOf.content} />
+            <PostMedias medias={repostOf.medias} />
+
+            {/* if this post is a repost of another post */}
+            {repostOf.repostOf?.id && repostOf.repostOf && (
+              <Post post={repostOf.repostOf} isRepostOf />
+            )}
+
+            {/* if this post is a reply to another post */}
+            {/* {post.parentId && post.parent && (
+            <Post post={post.parent} isParentPost />
+          )} */}
+
+            {!isRepostOf && <PostActions post={repostOf} />}
           </div>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate(`/posts/${post.id}`);
+      }}
+      className="flex gap-4 p-8 rounded-2xl mt-2 shadow-sm bg-[var(--color-grey-50)]/20 border-r border-b border-[var(--color-grey-300)]/80 w-full cursor-pointer"
+    >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate(`/profile/${post?.user?.profile?.id}`);
+        }}
+        className="transition-opacity duration-200 hover:opacity-80"
+      >
+        <ProfileImage size="sm" imgSrc={post.user.avatar} />
+      </div>
+
+      <div className="flex flex-col w-full gap-4">
+        <PostHeader post={post} />
+        <PostContent content={post.content} />
+        <PostMedias medias={post.medias} />
+
+        {/* if this post is a repost of another post */}
+        {post.repostOfId && post.repostOf && (
+          <Post post={post.repostOf} isRepostOf />
+        )}
+
+        {/* if this post is a reply to another post */}
+        {post.parentId && post.parent && (
+          <Post post={post.parent} isParentPost />
+        )}
+
+        {!isRepostOf && <PostActions post={post} />}
+      </div>
     </div>
   );
 }

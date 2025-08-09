@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaCamera } from 'react-icons/fa';
+import { MediaWithSkeleton } from './MediaWithSkeleton';
 // import { useAvatarUpload } from "../hooks/useAvatarUpload";
 
 type ProfileImageProps = {
@@ -7,7 +8,7 @@ type ProfileImageProps = {
   onClick?: () => void;
   imgSrc?: string | undefined | null;
   size?: 'xs' | 'sm' | 'md' | 'lg';
-  context?: 'profile' | 'edit';
+  context?: 'other' | 'profile' | 'edit';
   setProfileImageFromFile?: (file: File) => void;
   isUploading?: boolean;
 };
@@ -33,7 +34,7 @@ function ProfileImage({
   onClick,
   isUploading = false,
   size = 'lg',
-  context = 'profile',
+  context = 'other',
 }: ProfileImageProps) {
   // const { updateAvatar, isLoading } = useAvatarUpload();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -57,7 +58,7 @@ function ProfileImage({
   //   "w-full h-full object-cover rounded-full transition duration-300 ease-in-out";
   const overlayBase =
     'absolute top-0 left-0 w-full h-full bg-black/50 text-white flex flex-col gap-2 items-center justify-center text-sm font-bold opacity-0 transition-opacity duration-300';
-  const overlayVisible = context !== 'profile' ? 'group-hover:opacity-100' : '';
+  const overlayVisible = context === 'edit' ? 'group-hover:opacity-100' : '';
 
   // async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
   //   const file = e.target.files?.[0];
@@ -86,14 +87,18 @@ function ProfileImage({
   return (
     <div className="flex items-center gap-4 cursor-pointer group">
       <div className={`${baseWrapper} ${sizeClass}`} onClick={onClick}>
-        <img
-          src={src}
-          alt="Profile"
-          width={sizePx[size]}
-          height={sizePx[size]}
-          className="object-cover rounded-full w-full h-full"
-          onError={handleError}
-        />
+        {context === 'profile' ? (
+          <MediaWithSkeleton src={src} variant="profileImage" />
+        ) : (
+          <img
+            src={src}
+            alt="Profile"
+            width={sizePx[size]}
+            height={sizePx[size]}
+            className="object-cover rounded-full w-full h-full"
+            onError={handleError}
+          />
+        )}
         {isUploading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40">
             <div className="w-6 h-6 border-2 border-white rounded-full border-t-transparent animate-spin"></div>

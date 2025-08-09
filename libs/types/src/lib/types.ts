@@ -1,5 +1,5 @@
 export type MediaType = 'IMAGE' | 'VIDEO' | 'AUDIO';
-export type NotificationType = 'LIKE' | 'COMMENT' | 'FOLLOW' | 'REPOST';
+export type NotificationType = 'LIKE' | 'REPLY' | 'FOLLOW' | 'REPOST';
 
 type DateFields = {
   readonly createdAt: Date | string;
@@ -40,15 +40,15 @@ export type Bookmark = {
   post?: Post | null;
 } & Pick<DateFields, 'createdAt'>;
 
-export type Repost = {
-  id: string;
+// export type Repost = {
+//   id: string;
 
-  userId: string;
-  user: User;
+//   userId: string;
+//   user: User;
 
-  postId?: string | null;
-  post?: Post | null;
-} & Pick<DateFields, 'createdAt'>;
+//   postId?: string | null;
+//   post?: Post | null;
+// } & Pick<DateFields, 'createdAt'>;
 
 export type Post = {
   id: string;
@@ -62,11 +62,14 @@ export type Post = {
   parentId?: string | null; // If this post is a reply to another post
   parent?: Post | null; // The parent post if this is a reply
 
+  repostOfId?: string | null; // If this post is a repost of another post
+  repostOf?: Post | null; // The original post if this is a repost
+
   medias: Media[];
   replies: Post[]; // Replies to this post
   likes: Like[];
   bookmarks: Bookmark[];
-  reposts: Repost[];
+  reposts: Post[];
 
   _count?: {
     replies?: number;
@@ -76,6 +79,8 @@ export type Post = {
   };
 
   isLikedByCurrentUser?: boolean; // Indicates if the current user has liked this post
+  isBookmarkedByCurrentUser?: boolean; // Indicates if the current user has bookmarked this post
+  isRepostedByCurrentUser?: boolean; // Indicates if the current user has reposted this post
 } & DateFields;
 
 export type Profile = {
@@ -119,7 +124,6 @@ export type User = {
   posts: Post[];
   likes: Like[];
   bookmarks: Bookmark[];
-  reposts: Repost[];
   medias: Media[];
   profile?: Profile | null;
 

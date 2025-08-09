@@ -28,10 +28,11 @@ import { FileSizeValidationPipe } from '../common/pipes/file-size-validation.pip
 import { ImageCompressionPipe } from '../common/pipes/image-compression.pipe';
 import type { UploadFilesMap } from '../common/types/upload-files.type';
 import { User } from '../common/decorators/user.decorator';
+import { isRepostedByCurrentUser } from './interceptors/isRepostedByCurrentUser.interceptor';
 
 @Controller('posts')
 @Auth()
-@UseInterceptors(isLikedByCurrentUserInterceptor)
+@UseInterceptors(isLikedByCurrentUserInterceptor, isRepostedByCurrentUser)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -53,6 +54,12 @@ export class PostsController {
     return this.postsService.createPost(user.id, createPostDto, postMedia);
   }
 
+  @Post(':id/repost')
+  @Auth()
+  repostPost(@Param('id') id: string, @User() user: UserType) {
+    return this.postsService.repostPost(user.id, id);
+  }
+
   @Get('foryou')
   getForYouPosts(
     @Query('cursor', new DefaultValuePipe(0)) cursor: number,
@@ -71,7 +78,7 @@ export class PostsController {
   }
 
   @Get('profile/:id')
-  getUserPosts(@Param('id') id: string) {
+  getProfilePosts(@Param('id') id: string) {
     if (!id) {
       throw new BadRequestException('Profile ID is required');
     }
