@@ -110,11 +110,13 @@ function Sidebar() {
               className={`flex items-center text-[var(--color-grey-600)] rounded-md hover:bg-[var(--color-grey-100)]/30  ${item.class}`}
             >
               <Button icon={item.icon} className="!text-2xl !relative">
-                {item.name === 'Notifications' && count && count > 0 && (
-                  <span className="absolute top-0 px-1 text-xs text-white rounded-full right-1 bg-red-500/80">
-                    {count > 99 ? '99+' : count}
-                  </span>
-                )}
+                {item.name === 'Notifications' &&
+                  typeof count === 'number' &&
+                  count > 0 && (
+                    <span className="absolute top-0 px-1 text-xs text-white rounded-full right-1 bg-red-500/80">
+                      {count > 99 ? '99+' : count}
+                    </span>
+                  )}
               </Button>
               <span className="hidden lg:block">{item.name}</span>
             </Link>

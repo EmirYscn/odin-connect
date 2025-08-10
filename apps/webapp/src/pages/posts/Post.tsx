@@ -12,7 +12,7 @@ function PostPage() {
   const { post, isLoading: isPostLoading, error } = usePost(id as string);
   const { replies, isLoading: isRepliesLoading } = useReplies(id as string);
 
-  if (error) return <NotFound />;
+  if (!post || error) return <NotFound />;
 
   return (
     <div className="flex flex-col gap-4 p-4">

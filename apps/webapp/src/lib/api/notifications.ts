@@ -6,7 +6,19 @@ export const getUnreadNotificationsCount = async (): Promise<number> => {
   return response.data;
 };
 
-export const getNotifications = async (): Promise<Notification[]> => {
-  const response = await api.get('/notifications');
-  return response.data;
+export const getNotifications = async (
+  cursor?: string | null | undefined
+): Promise<{ notifications: Notification[]; nextCursor: string }> => {
+  const response = await api.get('/notifications', {
+    params: cursor ? { cursor } : {},
+  });
+
+  return {
+    notifications: response.data.notifications,
+    nextCursor: response.data.nextCursor,
+  };
+};
+
+export const markAllNotificationsAsRead = async (): Promise<void> => {
+  await api.post('/notifications/mark-all-as-read');
 };

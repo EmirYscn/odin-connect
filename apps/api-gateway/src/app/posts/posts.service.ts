@@ -225,6 +225,16 @@ export class PostsService {
       _count: fullPost._count,
     };
 
+    if (data.parentId) {
+      // Try to create a notification for the reply event
+      await this.notificationPub.tryCreatePostRelatedNotification(
+        userId,
+        data.parentId,
+        'post:replied',
+        'REPLY'
+      );
+    }
+
     this.eventsGateway.broadcastToAll('post:created', postPayload);
 
     return fullPost;

@@ -2,12 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@odin-connect-monorepo/prisma';
 import { Notification, NOTIFICATION_TYPE } from '@prisma/client';
 
+const LIMIT = 20;
+
 @Injectable()
 export class NotificationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getNotifications(userId: string) {
-    return this.prisma.notification.findMany({
+  async getNotifications(
+    userId: string,
+    cursor?: string
+  ): Promise<{
+    notifications: Notification[];
+    nextCursor?: string;
+  }> {
+    console.log('Fetching notifications with cursor:', cursor);
+    const notifications = await this.prisma.notification.findMany({
       where: { userId },
       include: {
         actor: {
@@ -20,8 +29,22 @@ export class NotificationsService {
           },
         },
       },
+      take: LIMIT + 1, // Fetch one extra to check if there's a next page
+      skip: 0,
+      cursor: cursor ? { id: cursor } : undefined,
       orderBy: { createdAt: 'desc' },
     });
+
+    let nextCursor: string | undefined = undefined;
+    if (notifications.length > LIMIT) {
+      const nextItem = notifications.pop(); // Remove the extra item
+      nextCursor = nextItem?.id;
+    }
+
+    return {
+      notifications,
+      nextCursor,
+    };
   }
 
   async getNotificationById(
@@ -60,6 +83,13 @@ export class NotificationsService {
   async getUnreadNotificationsCount(userId: string): Promise<number> {
     return this.prisma.notification.count({
       where: { userId, read: false },
+    });
+  }
+
+  async markAllNotificationsAsRead(userId: string): Promise<void> {
+    await this.prisma.notification.updateMany({
+      where: { userId, read: false },
+      data: { read: true },
     });
   }
 }

@@ -18,4 +18,10 @@ export class AppController {
     console.log('[Notification-Service]: Recevied post reposted event: ', data);
     return this.appService.handlePostReposted(data);
   }
+
+  @MessagePattern('post:replied')
+  handlePostReplied(@Payload() data: PostLikedDto) {
+    console.log('[Notification-Service]: Recevied post replied event: ', data);
+    return this.appService.handlePostReplied(data);
+  }
 }

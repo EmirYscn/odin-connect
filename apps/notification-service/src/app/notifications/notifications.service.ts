@@ -74,4 +74,39 @@ export class NotificationsService {
       },
     });
   }
+
+  async createPostRepliedNotification(actorId: string, postId: string) {
+    const actor = await this.prisma.user.findUnique({
+      where: { id: actorId },
+      select: { displayName: true },
+    });
+    if (!actor) {
+      throw new NotFoundException(`User with ID ${actorId} not found`);
+    }
+
+    const relatedPost = await this.prisma.post.findUnique({
+      where: { id: postId },
+      select: { parentId: true, userId: true },
+    });
+    if (!relatedPost) {
+      throw new NotFoundException(`Post with ID ${postId} not found`);
+    }
+
+    const postOwnerId = relatedPost.userId;
+    const isPostAReply = relatedPost?.parentId ? true : false;
+
+    const message = `${actor.displayName} has replied to your ${
+      isPostAReply ? 'reply' : 'post'
+    }`;
+
+    return this.prisma.notification.create({
+      data: {
+        type: 'REPLY',
+        message,
+        userId: postOwnerId,
+        postId,
+        actorId,
+      },
+    });
+  }
 }

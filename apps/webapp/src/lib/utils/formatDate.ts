@@ -1,7 +1,11 @@
-import { format, formatDistance } from "date-fns";
+import { format, formatDistance } from 'date-fns';
 
 export const formatDate = (dateString: string) => {
-  return format(new Date(dateString), "h:MM aa · dd MMM, yyyy");
+  return format(new Date(dateString), 'h:MM aa · dd MMM, yyyy');
+};
+
+export const formatDateWithoutTime = (dateString: string) => {
+  return format(new Date(dateString), 'dd MMM, yyyy');
 };
 
 export const formatTimeAgo = (dateString: string) => {
@@ -12,8 +16,8 @@ export const formatTimeAgo = (dateString: string) => {
 
 export function formatDateToHour(date: Date | string): string {
   const formattedDate = new Date(date).toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
+    hour: 'numeric',
+    minute: '2-digit',
     hour12: true,
   });
 
@@ -21,5 +25,5 @@ export function formatDateToHour(date: Date | string): string {
 }
 
 export function formatJoinedDate(date: Date | string): string {
-  return format(date, "MMM yyyy");
+  return format(date, 'MMM yyyy');
 }

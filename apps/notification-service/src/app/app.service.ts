@@ -55,4 +55,26 @@ export class AppService {
     }
     return;
   }
+
+  async handlePostReplied(data: PostLikedDto) {
+    const { actorId, postId } = data;
+    console.log(
+      `Handling post replied event for postId: ${postId} by actorId: ${actorId}`
+    );
+
+    // create a notification
+    const notification =
+      await this.notificationsService.createPostRepliedNotification(
+        actorId,
+        postId
+      );
+
+    if (notification) {
+      // emit notification event to the user
+      emitMQEvent(this.client, 'notification:created', {
+        notificationId: notification.id,
+      });
+    }
+    return;
+  }
 }

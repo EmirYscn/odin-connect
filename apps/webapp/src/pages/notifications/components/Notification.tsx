@@ -1,0 +1,80 @@
+import { useNavigate } from 'react-router-dom';
+import ProfileImage from '../../../components/ProfileImage';
+import { formatTimeAgo } from '../../../lib/utils/formatDate';
+import { Notification as NotificationType } from '@odin-connect-monorepo/types';
+
+import { HiOutlineBell, HiOutlineHeart } from 'react-icons/hi2';
+import { BiCommentDetail, BiRepost } from 'react-icons/bi';
+import { DateMessage } from '../../../hooks/useNotifications';
+
+function Notification({
+  notification,
+}: {
+  notification: NotificationType | DateMessage;
+}) {
+  const navigate = useNavigate();
+  let Icon = HiOutlineBell;
+  if (notification.type === 'LIKE') Icon = HiOutlineHeart;
+  else if (notification.type === 'REPOST') Icon = BiRepost;
+  else if (notification.type === 'REPLY') Icon = BiCommentDetail;
+
+  const actor =
+    notification.type !== 'SYSTEM' && notification.message.split(' ')[0];
+  const message =
+    notification.type !== 'SYSTEM' &&
+    actor &&
+    notification.message.replace(actor, '').trim();
+
+  if (notification.type === 'SYSTEM') {
+    return (
+      <div className="flex items-center justify-center text-sm text-[var(--color-grey-600)]/70 p-4">
+        {notification.message}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`flex gap-4 items-center rounded-xl shadow-md border border-[var(--color-grey-100)]/60 px-6 py-4 transition-transform hover:scale-[1.02] hover:shadow-lg cursor-default relative`}
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate(`/posts/${notification.postId}`);
+      }}
+    >
+      {!notification.read && (
+        <span className="absolute w-2 h-2 bg-blue-500 rounded-full top-2 left-2"></span>
+      )}
+      <span className="rounded-full bg-[var(--color-primary-100)] p-2">
+        <Icon className="w-6 h-6 text-[var(--color-grey-700)]" />
+      </span>
+      <div
+        className="hover:opacity-80"
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate(`/profile/${notification.actor.profile?.id}`);
+        }}
+      >
+        <ProfileImage imgSrc={notification.actor.avatar} size="sm" />
+      </div>
+
+      <div className="flex flex-col justify-center w-full">
+        <div className="flex items-center gap-2">
+          <span
+            className="font-semibold text-[var(--color-grey-800)] hover:font-bold hover:underline cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/profile/${notification.actor.profile?.id}`);
+            }}
+          >
+            {actor}
+          </span>
+          <p className="text-[var(--color-grey-700)]/80">{message}</p>
+        </div>
+        <span className="text-xs text-[var(--color-grey-600)]/60 mt-1">
+          {formatTimeAgo(notification.createdAt as string)}
+        </span>
+      </div>
+    </div>
+  );
+}
+export default Notification;
