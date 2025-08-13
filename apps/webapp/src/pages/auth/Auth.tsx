@@ -3,10 +3,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { USER_QUERY_KEY } from '../../lib/utils/constants';
+
 import { connectSocket } from '../../contexts/SocketContext';
 import Spinner from '../../components/Spinner';
-// import { connectSocket } from '../../lib/api/socket';
+import { USER_QUERY_KEY } from '../../lib/utils/queryKeys';
 
 function Auth() {
   const [searchParams] = useSearchParams();

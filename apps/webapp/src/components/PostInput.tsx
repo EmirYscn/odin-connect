@@ -78,7 +78,7 @@ function PostInput({ placeholder, parentPostId }: PostInputProps) {
           <TextareaAutosize
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full p-3 rounded-lg resize-none focus:outline-none"
+            className="w-full p-3 rounded-lg resize-none focus:outline-none text-[var(--color-grey-800)] placeholder:text-[var(--color-grey-500)]"
             minRows={1}
             placeholder={
               placeholder ? placeholder : "What's on your mind right now?"

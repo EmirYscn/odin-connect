@@ -20,7 +20,7 @@ import type { User as UserType } from '@prisma/client';
 
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
-import { isLikedByCurrentUserInterceptor } from './interceptors/isLikedByCurrentUser.interceptor';
+import { IsLikedByCurrentUserInterceptor } from '../common/interceptors/isLikedByCurrentUser.interceptor';
 import { Auth } from '../common/decorators/auth.decorator';
 import { FileCountValidationPipe } from '../common/pipes/file-count-validation.pipe';
 import { FileTypeValidationPipe } from '../common/pipes/file-type-validation.pipe';
@@ -28,11 +28,16 @@ import { FileSizeValidationPipe } from '../common/pipes/file-size-validation.pip
 import { ImageCompressionPipe } from '../common/pipes/image-compression.pipe';
 import type { UploadFilesMap } from '../common/types/upload-files.type';
 import { User } from '../common/decorators/user.decorator';
-import { isRepostedByCurrentUser } from './interceptors/isRepostedByCurrentUser.interceptor';
+import { IsRepostedByCurrentUserInterceptor } from '../common/interceptors/isRepostedByCurrentUser.interceptor';
+import { IsBookmarkedByCurrentUserInterceptor } from '../common/interceptors/isBookmarkedByCurrentUser.interceptor';
 
 @Controller('posts')
 @Auth()
-@UseInterceptors(isLikedByCurrentUserInterceptor, isRepostedByCurrentUser)
+@UseInterceptors(
+  IsLikedByCurrentUserInterceptor,
+  IsRepostedByCurrentUserInterceptor,
+  IsBookmarkedByCurrentUserInterceptor
+)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 

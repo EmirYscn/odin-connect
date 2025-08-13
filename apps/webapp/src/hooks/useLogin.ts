@@ -1,8 +1,9 @@
 import { login as loginApi } from '../lib/api/auth';
-import { USER_QUERY_KEY } from '../lib/utils/constants';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { USER_QUERY_KEY } from '../lib/utils/queryKeys';
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
@@ -19,6 +20,7 @@ export const useLogin = () => {
     onSuccess: (user) => {
       queryClient.setQueryData([USER_QUERY_KEY], user);
       navigate('/home', { replace: true });
+      toast.success('Successfully logged in!');
     },
     onError: (err) => {
       toast.error(err.message);

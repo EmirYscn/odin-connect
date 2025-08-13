@@ -2,8 +2,9 @@ import { editProfile as editProfileApi } from '../lib/api/profile';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useUser } from './useUser';
-import { USER_QUERY_KEY } from '../lib/utils/constants';
+
 import { Profile } from '@odin-connect-monorepo/types';
+import { USER_QUERY_KEY } from '../lib/utils/queryKeys';
 
 export const useEditProfile = () => {
   const queryClient = useQueryClient();

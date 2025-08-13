@@ -1,5 +1,6 @@
 import { getPost } from '../lib/api/posts';
 import { useQuery } from '@tanstack/react-query';
+import { POST } from '../lib/utils/queryKeys';
 
 export const usePost = (id: string) => {
   const {
@@ -7,7 +8,7 @@ export const usePost = (id: string) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['post', id],
+    queryKey: POST(id),
     queryFn: async () => getPost(id),
     enabled: !!id,
   });

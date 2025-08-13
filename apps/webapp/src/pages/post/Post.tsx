@@ -17,12 +17,15 @@ function PostPage() {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center gap-2 py-4">
-        <BackButton />
+        <BackButton navigateTo="/home" />
         <span className="text-xl font-semibold text-[var(--color-grey-700)]/90">
           Post
         </span>
       </div>
-      {post && <Post post={post} isLoading={isPostLoading} />}
+      {/* {post && post.parentId && post.parent && (
+        <Post key={post.parent.id} post={post.parent} />
+      )} */}
+      {post && <Post key={post.id} post={post} isLoading={isPostLoading} />}
       <div className="flex flex-col">
         <PostInput placeholder="Post your reply" parentPostId={id as string} />
         {

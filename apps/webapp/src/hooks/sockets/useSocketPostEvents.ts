@@ -2,6 +2,7 @@ import { PostCreatedPayload } from '@odin-connect-monorepo/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useSocket } from '../../contexts/SocketContext';
+import { POST_QUERY_KEY } from '../../lib/utils/queryKeys';
 
 export function useSocketPostEvents() {
   const socket = useSocket();
@@ -11,9 +12,8 @@ export function useSocketPostEvents() {
     if (!socket) return;
 
     const handlePostCreated = (data: PostCreatedPayload) => {
-      console.log('Post created event received:', data);
       queryClient.invalidateQueries({
-        queryKey: ['posts'],
+        queryKey: [POST_QUERY_KEY],
         exact: false,
       });
     };

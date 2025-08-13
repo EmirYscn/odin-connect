@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useReplies = (postId: string) => {
   const { data: replies, isLoading } = useQuery({
-    queryKey: ['replies', postId],
+    queryKey: ['post', 'replies', postId],
     queryFn: () => getReplies(postId),
     enabled: !!postId,
   });

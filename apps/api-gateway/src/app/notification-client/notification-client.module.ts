@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import {
   NOTIFICATION_SERVICE_RABBITMQ,
@@ -8,9 +8,11 @@ import { NotificationEventsController } from './notification-events.controller';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { EventsModule } from '../events/events.module';
 import { NotificationClientService } from './notification-client.service';
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
   imports: [
+    forwardRef(() => PostsModule),
     ClientsModule.register([
       {
         name: NOTIFICATION_SERVICE_RABBITMQ,

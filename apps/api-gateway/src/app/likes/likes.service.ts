@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@odin-connect-monorepo/prisma';
 import { NotificationClientService } from '../notification-client/notification-client.service';
 
@@ -10,6 +10,22 @@ export class LikesService {
   ) {}
 
   async likePost(postId: string, userId: string) {
+    // Validate user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    // Validate post exists
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      throw new BadRequestException('Post not found');
+    }
+
     const hasLiked = await this.prisma.like.findUnique({
       where: {
         userId_postId: {
@@ -37,7 +53,6 @@ export class LikesService {
       },
     });
 
-    // Try to create a notification for the like event
     await this.notificationPub.tryCreatePostRelatedNotification(
       userId,
       postId,

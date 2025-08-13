@@ -6,7 +6,7 @@ import { RiHomeLine, RiNotification3Line } from 'react-icons/ri';
 import Button from './Button';
 import { IoSearch, IoSettingsOutline, IoSunny } from 'react-icons/io5';
 import { MdDarkMode, MdOutlineMail } from 'react-icons/md';
-import { FaRegUser } from 'react-icons/fa';
+import { FaRegBookmark, FaRegUser } from 'react-icons/fa';
 import ProfileImage from './ProfileImage';
 import { BsThreeDots } from 'react-icons/bs';
 import Menus from './Menus';
@@ -60,6 +60,11 @@ function Sidebar() {
       name: 'Notifications',
       icon: <RiNotification3Line />,
       href: '/notifications',
+    },
+    {
+      name: 'Bookmarks',
+      icon: <FaRegBookmark />,
+      href: '/bookmarks',
     },
     {
       name: 'Messages',

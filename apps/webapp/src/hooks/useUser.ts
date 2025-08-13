@@ -2,10 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useEffect } from 'react';
 import { getCurrentUser } from '../lib/api/auth';
-// import { connectSocket } from '../lib/api/socket';
-import { connectSocket } from '../contexts/SocketContext';
 
-const USER_QUERY_KEY = 'user';
+import { connectSocket } from '../contexts/SocketContext';
+import { USER_QUERY_KEY } from '../lib/utils/queryKeys';
 
 export const useUser = () => {
   const query = useQuery({

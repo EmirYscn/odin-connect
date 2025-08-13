@@ -35,7 +35,7 @@ function Post({ post, isLoading, isParentPost, isRepostOf }: PostProps) {
       <div
         onClick={(e) => {
           e.stopPropagation();
-          navigate(`/posts/${repostOf.id}`);
+          navigate(`/post/${repostOf.id}`);
         }}
         className="flex flex-col gap-4 p-8 rounded-2xl mt-2 shadow-sm bg-[var(--color-grey-50)]/20 border-r border-b border-[var(--color-grey-300)]/80 w-full cursor-pointer"
       >
@@ -88,7 +88,7 @@ function Post({ post, isLoading, isParentPost, isRepostOf }: PostProps) {
     <div
       onClick={(e) => {
         e.stopPropagation();
-        navigate(`/posts/${post.id}`);
+        navigate(`/post/${post.id}`);
       }}
       className="flex gap-4 p-8 rounded-2xl mt-2 shadow-sm bg-[var(--color-grey-50)]/20 border-r border-b border-[var(--color-grey-300)]/80 w-full cursor-pointer"
     >

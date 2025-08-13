@@ -1,13 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
 import AppLayout from '../components/AppLayout';
 import Home from '../pages/home/Home';
-import PostPage from '../pages/posts/Post';
+import PostPage from '../pages/post/Post';
 import Profile from '../pages/profile/Profile';
 import Login from '../pages/login/Login';
 import Signup from '../pages/signup/Signup';
 import Auth from '../pages/auth/Auth';
 import { useSocketNotificationEvents } from '../hooks/sockets/useSocketNotificationEvents';
 import Notifications from '../pages/notifications/Notifications';
+import Bookmarks from '../pages/bookmarks/Bookmarks';
 
 export function App() {
   useSocketNotificationEvents();
@@ -17,9 +18,10 @@ export function App() {
       <Route element={<AppLayout />}>
         <Route path="/" index element={<Home />} />
         <Route path="/home" index element={<Home />} />
-        <Route path="/posts/:id" element={<PostPage />} />
+        <Route path="/post/:id" element={<PostPage />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/bookmarks" element={<Bookmarks />} />
       </Route>
 
       <Route path="/auth" element={<Auth />} />

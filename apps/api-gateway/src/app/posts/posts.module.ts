@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 
@@ -16,9 +16,10 @@ import { NotificationClientModule } from '../notification-client/notification-cl
     UsersModule,
     ProfileModule,
     MediaModule,
-    NotificationClientModule,
+    forwardRef(() => NotificationClientModule),
   ],
   providers: [PostsService],
   controllers: [PostsController],
+  exports: [PostsService],
 })
 export class PostsModule {}

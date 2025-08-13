@@ -21,7 +21,7 @@ function Profile() {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center gap-2 py-4 sticky top-0 z-10 backdrop-blur-md bg-[var(--color-grey-50)]/10 rounded-bl-md rounded-br-md">
-        <BackButton />
+        <BackButton navigateTo="/home" />
         <span className="text-xl font-semibold text-[var(--color-grey-700)]/90">
           {profile?.user.displayName}
         </span>

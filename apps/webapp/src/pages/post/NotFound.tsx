@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect } from 'react';
 import PostSkeleton from '../../components/PostSkeleton';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +13,7 @@ function NotFound() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col px-4">
+    <div className="flex flex-col min-h-screen px-4">
       <div className="w-full mb-8">
         <PostSkeleton
           texts={['Post Not Found', 'Redirecting you to the home page...']}

@@ -15,7 +15,6 @@ export class NotificationsService {
     notifications: Notification[];
     nextCursor?: string;
   }> {
-    console.log('Fetching notifications with cursor:', cursor);
     const notifications = await this.prisma.notification.findMany({
       where: { userId },
       include: {

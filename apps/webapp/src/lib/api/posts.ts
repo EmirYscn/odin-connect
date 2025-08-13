@@ -78,20 +78,6 @@ export const deletePost = async (id: string): Promise<void> => {
   }
 };
 
-export const likePost = async (postId: string) => {
-  try {
-    await api.post('/likes', { postId });
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const serverMessage =
-        error.response?.data?.message || "Couldn't like post";
-      throw new Error(serverMessage);
-    }
-
-    throw new Error('An unexpected error occurred.');
-  }
-};
-
 export const repostPost = async (postId: string) => {
   try {
     await api.post(`/posts/${postId}/repost`);

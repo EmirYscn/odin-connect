@@ -9,6 +9,7 @@ import {
 } from '../lib/api/notifications';
 import { formatDateWithoutTime } from '../lib/utils/formatDate';
 import { Notification } from '@odin-connect-monorepo/types';
+import { NOTIFICATIONS } from '../lib/utils/queryKeys';
 
 export type DateMessage = {
   id: string;
@@ -26,7 +27,7 @@ export const useNotifications = () => {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ['notifications'],
+    queryKey: NOTIFICATIONS,
     queryFn: ({ pageParam }: { pageParam?: string }) =>
       getNotifications(pageParam),
     initialPageParam: undefined,
@@ -37,7 +38,7 @@ export const useNotifications = () => {
     mutationFn: markAllNotificationsAsRead,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['notifications'],
+        queryKey: NOTIFICATIONS,
         exact: false,
       });
     },
