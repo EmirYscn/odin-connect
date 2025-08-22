@@ -75,7 +75,7 @@ function Sidebar() {
     {
       name: 'Profile',
       icon: <FaRegUser />,
-      href: `/profile/${user?.profile?.id}`,
+      href: `/profile/${user?.username}`,
       class: 'hidden md:flex',
     },
     {

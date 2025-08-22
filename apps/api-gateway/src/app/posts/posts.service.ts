@@ -2,21 +2,24 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-
-import { CreatePostDto } from './dtos/create-post.dto';
 import { Post } from '@prisma/client';
-import { PrismaService } from '@odin-connect-monorepo/prisma';
+
 import { UsersService } from '../users/users.service';
 import { ProfileService } from '../profile/profile.service';
 import { MediaService } from '../media/media.service';
 import { EventsGateway } from '../events/events.gateway';
-import { PostCreatedPayload } from '@odin-connect-monorepo/types';
 import { NotificationClientService } from '../notification-client/notification-client.service';
+
+import { FullPost } from '@odin-connect-monorepo/types';
+import { PrismaService } from '@odin-connect-monorepo/prisma';
+
+import { CreatePostDto } from './dtos/create-post.dto';
+
 import {
   postInclude,
+  postWithParentAndRepostOfInclude,
   postWithParentInclude,
   postWithRepostOfInclude,
 } from '../common/types/prismaIncludes';
@@ -46,8 +49,8 @@ export class PostsService {
     const createdPost = await this.prisma.post.create({
       data: {
         ...data,
-        userId: user.id, // Ensure the post is associated with the correct user
-        parentId: data.parentId || null, // If parentId is provided, use it; otherwise, set to null
+        userId: user.id,
+        parentId: data.parentId || null, // Presence of parentId indicates a reply
       },
     });
 
@@ -62,30 +65,13 @@ export class PostsService {
 
     const fullPost = await this.prisma.post.findUnique({
       where: { id: createdPost.id },
-      include: postWithRepostOfInclude,
+      include: postWithParentAndRepostOfInclude,
     });
     if (!fullPost) {
       throw new InternalServerErrorException('Failed to retrieve created post');
     }
 
-    const postPayload: PostCreatedPayload = {
-      id: fullPost.id,
-      content: fullPost.content!,
-      createdAt: fullPost.createdAt.toISOString(),
-      user: {
-        id: fullPost.user.id,
-        username: fullPost.user.username,
-        displayName: fullPost.user.displayName ?? null,
-        avatar: fullPost.user.avatar ?? null,
-        profile: fullPost.user.profile
-          ? { id: fullPost.user.profile.id }
-          : null,
-      },
-      likes: fullPost.likes,
-      medias: fullPost.medias,
-      _count: fullPost._count,
-    };
-
+    // Presence of parentId indicates a reply
     if (data.parentId) {
       // Try to create a notification for the reply event
       await this.notificationPub.tryCreatePostRelatedNotification(
@@ -96,7 +82,7 @@ export class PostsService {
       );
     }
 
-    this.eventsGateway.broadcastToAll('post:created', postPayload);
+    this.eventsGateway.broadcastToAll('post:created', fullPost as FullPost);
 
     return fullPost;
   }
@@ -166,24 +152,6 @@ export class PostsService {
       throw new InternalServerErrorException('Failed to retrieve created post');
     }
 
-    const postPayload: PostCreatedPayload = {
-      id: fullPost.id,
-      content: fullPost.content!,
-      createdAt: fullPost.createdAt.toISOString(),
-      user: {
-        id: fullPost.user.id,
-        username: fullPost.user.username,
-        displayName: fullPost.user.displayName ?? null,
-        avatar: fullPost.user.avatar ?? null,
-        profile: fullPost.user.profile
-          ? { id: fullPost.user.profile.id }
-          : null,
-      },
-      likes: fullPost.likes,
-      medias: fullPost.medias,
-      _count: fullPost._count,
-    };
-
     // Try to create a notification for the repost event
     await this.notificationPub.tryCreatePostRelatedNotification(
       userId,
@@ -192,7 +160,7 @@ export class PostsService {
       'REPOST'
     );
 
-    this.eventsGateway.broadcastToAll('post:created', postPayload);
+    this.eventsGateway.broadcastToAll('post:created', fullPost as FullPost);
 
     return fullPost;
   }
@@ -203,7 +171,7 @@ export class PostsService {
         // parentId: null, // Only get top-level posts
         published: true,
       },
-      include: { ...postWithRepostOfInclude, ...postWithParentInclude },
+      include: postWithParentAndRepostOfInclude,
       orderBy: {
         createdAt: 'desc',
       },
@@ -234,20 +202,21 @@ export class PostsService {
         // parentId: null, // Only get top-level posts
         published: true,
       },
-      include: { ...postWithRepostOfInclude, ...postWithParentInclude },
+      include: postWithParentAndRepostOfInclude,
       orderBy: {
         createdAt: 'desc',
       },
     });
   }
 
-  async getProfilePosts(profileId: string): Promise<Post[]> {
+  async getProfilePosts(username: string): Promise<Post[]> {
     // Validate user exists
-    const profile = await this.profileService.getProfileById(profileId);
-    if (!profile) {
+    const user = await this.usersService.getUserByUsername(username);
+    if (!user) {
       throw new UnauthorizedException('User not found');
     }
-    const userId = profile.user.id;
+
+    const userId = user.id;
     const posts = await this.prisma.post.findMany({
       where: {
         userId,
@@ -263,10 +232,30 @@ export class PostsService {
     return posts;
   }
 
+  async getProfileReplies(username: string): Promise<Post[]> {
+    // Validate user exists
+    const user = await this.usersService.getUserByUsername(username);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    const userId = user.id;
+    const replies = await this.prisma.post.findMany({
+      where: {
+        userId,
+        parentId: {
+          not: null, // Only get replies (posts with a parent)
+        },
+      },
+      include: postWithParentInclude,
+      orderBy: { createdAt: 'desc' },
+    });
+    return replies;
+  }
+
   async getPostById(id: string): Promise<Post> {
     const post = await this.prisma.post.findUnique({
       where: { id },
-      include: { ...postWithRepostOfInclude, ...postWithParentInclude },
+      include: postWithParentAndRepostOfInclude,
     });
 
     if (!post) {
@@ -283,25 +272,6 @@ export class PostsService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return replies;
-  }
-
-  async getProfileReplies(profileId: string): Promise<Post[]> {
-    // Validate user exists
-    const profile = await this.profileService.getProfileById(profileId);
-    if (!profile) {
-      throw new UnauthorizedException('User not found');
-    }
-    const replies = await this.prisma.post.findMany({
-      where: {
-        userId: profile.user.id,
-        parentId: {
-          not: null, // Only get replies (posts with a parent)
-        },
-      },
-      include: postWithParentInclude,
-      orderBy: { createdAt: 'desc' },
-    });
     return replies;
   }
 

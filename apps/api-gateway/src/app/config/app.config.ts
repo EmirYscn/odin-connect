@@ -7,5 +7,6 @@ export default registerAs('appConfig', () => ({
   serverUrl: process.env.SERVER_URL,
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseKey: process.env.SUPABASE_KEY,
+  rabbitMqUrl: process.env.RABBITMQ_URL,
   uploadFileSizeLimit: parseInt(process.env.UPLOAD_FILE_SIZE_LIMIT!, 10),
 }));

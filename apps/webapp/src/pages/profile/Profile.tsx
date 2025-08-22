@@ -10,11 +10,13 @@ import Replies from './components/Replies';
 import Medias from './components/Medias';
 
 function Profile() {
-  const { id } = useParams();
-  const { profile, isLoading: isLoadingProfile } = useProfile(id as string);
+  const { username } = useParams();
+  const { profile, isLoading: isLoadingProfile } = useProfile(
+    username as string
+  );
 
   const { userPosts, isLoading: isLoadingPosts } = useProfilePosts(
-    id as string
+    username as string
   );
   const [context, setContext] = useState<ProfileTabContext>('posts');
 
@@ -35,9 +37,9 @@ function Profile() {
         <Posts posts={userPosts} isLoading={isLoadingPosts} context="profile" />
       )}
 
-      {context === 'replies' && <Replies profileId={id as string} />}
+      {context === 'replies' && <Replies username={username as string} />}
 
-      {context === 'media' && <Medias profileId={id as string} />}
+      {context === 'media' && <Medias username={username as string} />}
     </div>
   );
 }

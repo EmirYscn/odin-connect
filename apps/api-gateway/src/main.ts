@@ -13,10 +13,19 @@ import { API_GATEWAY_NOTIFICATION_QUEUE } from '@odin-connect-monorepo/types';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const configService = app.get(ConfigService);
+  const clientUrl = configService.get<string>('appConfig.clientUrl');
+  const port = configService.get<number>('appConfig.port') || 3000;
+  const environment = configService.get<string>('appConfig.environment');
+  const rabbitMqUrl = configService.get<string>(
+    'appConfig.rabbitMqUrl'
+  ) as string;
+  console.log(`RabbitMQ URL: ${rabbitMqUrl}`);
+
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://user:password@localhost:5672'],
+      urls: [rabbitMqUrl],
       queue: API_GATEWAY_NOTIFICATION_QUEUE,
       queueOptions: {
         durable: true,
@@ -24,11 +33,6 @@ async function bootstrap() {
     },
   });
   app.useGlobalFilters(new GlobalExceptionFilter());
-
-  const configService = app.get(ConfigService);
-  const clientUrl = configService.get<string>('appConfig.clientUrl');
-  const port = configService.get<number>('appConfig.port') || 3000;
-  const environment = configService.get<string>('appConfig.environment');
 
   Logger.log(`API Gateway running on port ${port}`, 'Bootstrap');
   Logger.log(`Node environment: ${environment}`, 'Bootstrap');

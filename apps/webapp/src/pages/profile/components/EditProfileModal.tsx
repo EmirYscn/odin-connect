@@ -27,7 +27,7 @@ type EditProfileFormData = {
 
 function EditProfileModal({ onCloseModal }: EditProfileModalProps) {
   const { user } = useUser();
-  const { profile } = useProfile(user?.profile?.id as string);
+  const { profile } = useProfile(user?.username as string);
   const { editProfile, isPending } = useEditProfile();
   const {
     register,
@@ -135,13 +135,13 @@ function EditProfileModal({ onCloseModal }: EditProfileModalProps) {
     <div className="p-4 w-[20rem] md:w-[30rem] lg:w-[40rem] ">
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
+          <h2 className="mb-4 text-xl font-semibold">Edit Profile</h2>
           <Button type="submit" variation="save" disabled={isPending}>
             Save
           </Button>
         </div>
 
-        <div className="max-h-130 overflow-y-auto">
+        <div className="overflow-y-auto max-h-130">
           <div className="relative">
             <ProfileBackgroundImage
               context="edit"

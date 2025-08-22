@@ -105,6 +105,7 @@ export class UsersService {
         throw new HttpException('Username already exists', 400);
       }
     }
+
     return this.prisma.user.update({
       where: { id },
       data,
@@ -161,6 +162,98 @@ export class UsersService {
       following: user._count.following,
       followers: user._count.followers,
     };
+  }
+
+  async toggleFollowUser(followerId: string, followingUsername: string) {
+    return await this.prisma.$transaction(async (prisma) => {
+      const follower = await prisma.user.findUnique({
+        where: { id: followerId },
+      });
+      if (!follower) {
+        throw new HttpException('Follower not found', 404);
+      }
+
+      const following = await this.getUserByUsername(followingUsername);
+      const followingId = following?.id;
+
+      if (!followingId) {
+        throw new HttpException('Following user not found', 404);
+      }
+
+      if (followerId === followingId) {
+        throw new BadRequestException('Cannot follow yourself');
+      }
+
+      const existingFollow = await prisma.userFollowing.findFirst({
+        where: {
+          followerId,
+          followingId,
+        },
+      });
+
+      if (existingFollow) {
+        const follow = await prisma.userFollowing.delete({
+          where: { followerId_followingId: { followerId, followingId } },
+        });
+
+        return { status: 'unfollowed', follow };
+      }
+
+      const follow = await prisma.userFollowing.create({
+        data: {
+          followerId,
+          followingId,
+        },
+      });
+
+      return { status: 'followed', follow };
+    });
+  }
+
+  async getUserFollowing(username: string) {
+    const user = await this.getUserByUsername(username);
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    const following = await this.prisma.userFollowing.findMany({
+      where: { followerId: user.id },
+      include: {
+        following: {
+          select: {
+            id: true,
+            username: true,
+            displayName: true,
+            avatar: true,
+            profile: { select: { id: true, bio: true } },
+          },
+        },
+      },
+    });
+    return following.map((f) => f.following);
+  }
+
+  async getUserFollowers(username: string) {
+    const user = await this.getUserByUsername(username);
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    const followers = await this.prisma.userFollowing.findMany({
+      where: { followingId: user.id },
+      include: {
+        follower: {
+          select: {
+            id: true,
+            username: true,
+            displayName: true,
+            avatar: true,
+            profile: { select: { id: true, bio: true } },
+          },
+        },
+      },
+    });
+    return followers.map((f) => f.follower);
   }
 
   async generateUniqueUsername(baseUsername: string): Promise<string> {

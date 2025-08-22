@@ -4,10 +4,10 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-
 import { randomUUID } from 'crypto';
 import { MEDIA_TYPE } from '@prisma/client';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
 import appConfig from '../config/app.config';
 
 @Injectable()
@@ -22,12 +22,12 @@ export class SupabaseService {
       this.appConfiguration.supabaseKey!
     );
   }
+
   async uploadAvatar(file: Express.Multer.File, userId: string) {
     const { buffer } = file;
 
     const timestamp = Date.now();
     const folderPath = `user-${userId}`;
-
     const ext = file.mimetype.split('/')[1];
 
     const filePath = `${folderPath}/avatar-${timestamp}.${ext}`;

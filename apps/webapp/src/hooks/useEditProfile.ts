@@ -1,31 +1,36 @@
 import { editProfile as editProfileApi } from '../lib/api/profile';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useUser } from './useUser';
 
 import { Profile } from '@odin-connect-monorepo/types';
-import { USER_QUERY_KEY } from '../lib/utils/queryKeys';
+import { PROFILE, USER_QUERY_KEY } from '../lib/utils/queryKeys';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const useEditProfile = () => {
   const queryClient = useQueryClient();
+  const { username } = useParams();
+  const navigate = useNavigate();
 
-  const { user } = useUser();
   const { mutate: editProfile, isPending } = useMutation({
     mutationFn: (
       profileData: Partial<
         Profile & { profileImageFile: File; backgroundImageFile: File }
       >
     ) => editProfileApi(profileData),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success('Profile edited successfully!');
       queryClient.invalidateQueries({
-        queryKey: ['profile', user?.profile?.id],
+        queryKey: PROFILE(username || ''),
         exact: false,
       });
       queryClient.invalidateQueries({
         queryKey: [USER_QUERY_KEY],
         exact: false,
       });
+      // Redirect if username changed
+      if (data?.user.username && data.user.username !== username) {
+        navigate(`/profile/${data.user.username}`);
+      }
     },
     onError: (err) => {
       toast.error(err.message);

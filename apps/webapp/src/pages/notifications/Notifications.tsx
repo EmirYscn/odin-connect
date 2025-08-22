@@ -4,6 +4,7 @@ import SpinnerMini from '../../components/SpinnerMini';
 import { useNotifications } from '../../hooks/useNotifications';
 
 import Notification from './components/Notification';
+import NotificationSkeleton from './components/NotificationSkeleton';
 
 function Notifications() {
   const {
@@ -24,6 +25,16 @@ function Notifications() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col w-full gap-8 p-10">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <NotificationSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full gap-8 p-10">

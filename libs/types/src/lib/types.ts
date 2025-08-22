@@ -40,16 +40,6 @@ export type Bookmark = {
   post?: Post | null;
 } & Pick<DateFields, 'createdAt'>;
 
-// export type Repost = {
-//   id: string;
-
-//   userId: string;
-//   user: User;
-
-//   postId?: string | null;
-//   post?: Post | null;
-// } & Pick<DateFields, 'createdAt'>;
-
 export type Post = {
   id: string;
   content: string;
@@ -91,6 +81,8 @@ export type Profile = {
 
   userId: string;
   user: User;
+
+  isFollowedByCurrentUser?: boolean; // Indicates if the current user follows this profile
 } & DateFields;
 
 export type Notification = {
@@ -172,39 +164,61 @@ export type UserSettings = {
   user: User;
 } & Omit<DateFields, 'deletedAt'>;
 
-export interface PostCreatedPayload {
-  id: string;
-  content: string;
-  createdAt: string;
+export type FullPost = Post & {
   user: {
     id: string;
     username: string;
-    displayName: string | null;
+    displayName?: string | null;
     avatar?: string | null;
-    profile: {
-      id: string;
-    } | null;
+    profile?: { id: string } | null;
   };
-  likes: {
-    userId: string;
-  }[];
-  medias?: {
-    id: string;
-    url: string;
-    filePath: string;
-    type: MediaType;
-  }[]; // Optional, if the post has media
+  likes: Like[];
+  reposts: Post[];
+  bookmarks: Bookmark[];
+  medias: Media[];
   _count?: {
     replies?: number;
     likes?: number;
     bookmarks?: number;
     reposts?: number;
   };
-}
+  parent?: FullPost | null; // If this post is a reply, include the parent post
+  repostOf?: FullPost | null; // If this post is a repost, include the original post
+};
+
+// export interface PostCreatedPayload {
+//   id: string;
+//   content?: string | null; // Content of the post, can be null for reposts
+//   createdAt: string;
+//   user: {
+//     id: string;
+//     username: string;
+//     displayName: string | null;
+//     avatar?: string | null;
+//     profile: {
+//       id: string;
+//     } | null;
+//   };
+//   likes: {
+//     userId: string;
+//   }[];
+//   medias?: {
+//     id: string;
+//     url: string;
+//     filePath: string;
+//     type: MediaType;
+//   }[]; // Optional, if the post has media
+//   _count?: {
+//     replies?: number;
+//     likes?: number;
+//     bookmarks?: number;
+//     reposts?: number;
+//   };
+// }
 
 export interface ServerToClientEvents {
   'message:received': (data: any) => void;
-  'post:created': (data: PostCreatedPayload) => void;
+  'post:created': (data: FullPost) => void;
   'notification:received': (data: Partial<Notification>) => void;
   'post:liked': (data: { actorId: string; postId: string }) => void;
   'post:replied': (data: { actorId: string; postId: string }) => void;

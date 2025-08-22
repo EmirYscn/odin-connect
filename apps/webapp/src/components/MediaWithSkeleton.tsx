@@ -23,9 +23,15 @@ export function MediaWithSkeleton({
       {/* Skeleton or error placeholder */}
       {(!isLoaded || hasError) && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-300 rounded-lg animate-pulse">
-          {hasError ? (
+          {hasError && variant !== 'profileImage' ? (
             <span className="text-gray-500">Image failed to load</span>
-          ) : null}
+          ) : (
+            <img
+              src={'/default-profile-icon.png'}
+              alt="Profile"
+              className="object-cover w-full h-full rounded-full"
+            />
+          )}
         </div>
       )}
 

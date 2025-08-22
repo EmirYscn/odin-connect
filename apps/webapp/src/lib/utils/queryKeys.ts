@@ -22,3 +22,31 @@ export const NOTIFICATIONS_UNREAD_COUNT = ['notifications', 'unreadCount'];
 
 // bookmark query key
 export const BOOKMARKS = ['bookmarks'];
+
+// profile query key
+export const PROFILE = (username: string) => ['profile', username];
+export const PROFILE_POSTS = (username: string) => [
+  'posts',
+  'profile',
+  username,
+];
+export const PROFILE_REPLIES = (username: string) => [
+  'replies',
+  'profile',
+  username,
+];
+export const PROFILE_MEDIAS = (username: string) => [
+  'medias',
+  'profile',
+  username,
+];
+export const PROFILE_FOLLOWING = (username: string) => [
+  'following',
+  'profile',
+  username,
+];
+export const PROFILE_FOLLOWERS = (username: string) => [
+  'followers',
+  'profile',
+  username,
+];

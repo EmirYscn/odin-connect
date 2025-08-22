@@ -4,16 +4,16 @@ import { MediaWithSkeleton } from '../../../components/MediaWithSkeleton';
 import { useProfileMedias } from '../../../hooks/useProfileMedias';
 
 type MediasProps = {
-  profileId: string;
+  username: string;
 };
 
-function Medias({ profileId }: MediasProps) {
-  const { medias, isLoading } = useProfileMedias(profileId);
+function Medias({ username }: MediasProps) {
+  const { medias, isLoading } = useProfileMedias(username as string);
 
   if (isLoading) return <MediasSkeleton />;
 
   return medias && medias.length > 0 ? (
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
       {medias.map((media) => (
         <MediaWithSkeleton key={media.id} src={media.url} />
       ))}

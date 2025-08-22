@@ -8,10 +8,13 @@ type ButtonProps = {
     | 'text'
     | 'editProfile'
     | 'save'
-    | 'loadMore';
+    | 'loadMore'
+    | 'follow';
   icon?: React.ReactNode;
   children?: React.ReactNode;
   onClick?: (() => void) | ((e: React.MouseEvent<HTMLButtonElement>) => void);
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
@@ -39,6 +42,8 @@ const variationClasses: Record<
   save: '!bg-[var(--color-grey-800)] !text-[var(--color-grey-50)] !hover:bg-[var(--color-grey-100)] !rounded-full !text-sm !px-5 !py-2',
   loadMore:
     'bg-[var(--color-brand-100)]/80 text-white hover:bg-[var(--color-brand-100)]/80 !rounded-full !text-sm !px-5 !py-2 flex items-center justify-center',
+  follow:
+    'bg-[var(--color-brand-100)] text-white hover:bg-[var(--color-brand-100)]/80 !rounded-full !text-sm px-6',
 };
 
 function Button({
@@ -48,6 +53,8 @@ function Button({
   icon,
   children,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
   disabled,
   className,
   iconEnd = false,
@@ -60,6 +67,8 @@ function Button({
     <button
       type={type}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       disabled={disabled}
       className={`${baseClasses} ${sizeClasses[size]} ${variationClasses[variation]} ${className}`}
     >

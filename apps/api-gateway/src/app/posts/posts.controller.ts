@@ -13,21 +13,24 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { CreatePostDto } from './dtos/create-post.dto';
-import { PostsService } from './posts.service';
-
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import type { User as UserType } from '@prisma/client';
 
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { CreatePostDto } from './dtos/create-post.dto';
 
-import { IsLikedByCurrentUserInterceptor } from '../common/interceptors/isLikedByCurrentUser.interceptor';
+import { PostsService } from './posts.service';
+
 import { Auth } from '../common/decorators/auth.decorator';
+import { User } from '../common/decorators/user.decorator';
+
 import { FileCountValidationPipe } from '../common/pipes/file-count-validation.pipe';
 import { FileTypeValidationPipe } from '../common/pipes/file-type-validation.pipe';
 import { FileSizeValidationPipe } from '../common/pipes/file-size-validation.pipe';
 import { ImageCompressionPipe } from '../common/pipes/image-compression.pipe';
+
 import type { UploadFilesMap } from '../common/types/upload-files.type';
-import { User } from '../common/decorators/user.decorator';
+
+import { IsLikedByCurrentUserInterceptor } from '../common/interceptors/isLikedByCurrentUser.interceptor';
 import { IsRepostedByCurrentUserInterceptor } from '../common/interceptors/isRepostedByCurrentUser.interceptor';
 import { IsBookmarkedByCurrentUserInterceptor } from '../common/interceptors/isBookmarkedByCurrentUser.interceptor';
 
@@ -82,12 +85,12 @@ export class PostsController {
     return this.postsService.getFollowingPosts(user.id);
   }
 
-  @Get('profile/:id')
-  getProfilePosts(@Param('id') id: string) {
-    if (!id) {
-      throw new BadRequestException('Profile ID is required');
+  @Get('profile/:username')
+  getProfilePosts(@Param('username') username: string) {
+    if (!username) {
+      throw new BadRequestException('Username is required');
     }
-    return this.postsService.getProfilePosts(id);
+    return this.postsService.getProfilePosts(username);
   }
 
   @Get(':id')
@@ -106,12 +109,12 @@ export class PostsController {
     return await this.postsService.getRepliesByPostId(id);
   }
 
-  @Get('profile/:id/replies')
-  async getProfileReplies(@Param('id') id: string) {
-    if (!id) {
-      throw new BadRequestException('Profile ID is required');
+  @Get('profile/:username/replies')
+  async getProfileReplies(@Param('username') username: string) {
+    if (!username) {
+      throw new BadRequestException('Username is required');
     }
-    return await this.postsService.getProfileReplies(id);
+    return await this.postsService.getProfileReplies(username);
   }
 
   @Delete(':id')

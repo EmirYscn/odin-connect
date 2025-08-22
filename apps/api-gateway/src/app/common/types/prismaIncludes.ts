@@ -1,13 +1,38 @@
-export const postInclude = {
+// BASE INCLUDES
+
+export const postCountInclude = {
+  _count: {
+    select: {
+      replies: true,
+      likes: true,
+      bookmarks: true,
+      reposts: true,
+    },
+  },
+};
+export const userInclude = {
   user: {
     select: {
       id: true,
       username: true,
       displayName: true,
       avatar: true,
-      profile: true,
+      profile: { select: { id: true } },
     },
   },
+};
+
+export const mediasInclude = {
+  medias: {
+    select: {
+      id: true,
+      url: true,
+      type: true,
+    },
+  },
+};
+
+export const postActionsInclude = {
   likes: {
     select: {
       userId: true,
@@ -23,21 +48,15 @@ export const postInclude = {
       userId: true,
     },
   },
-  medias: {
-    select: {
-      id: true,
-      url: true,
-      type: true,
-    },
-  },
-  _count: {
-    select: {
-      replies: true,
-      likes: true,
-      bookmarks: true,
-      reposts: true,
-    },
-  },
+};
+
+// COMPOSITE INCLUDES
+
+export const postInclude = {
+  ...userInclude,
+  ...postActionsInclude,
+  ...mediasInclude,
+  ...postCountInclude,
 };
 
 export const repostOfInclude = {
@@ -46,81 +65,24 @@ export const repostOfInclude = {
       id: true,
       content: true,
       createdAt: true,
-      likes: { select: { userId: true } },
-      reposts: { select: { userId: true } },
-      bookmarks: {
-        select: {
-          userId: true,
-        },
-      },
-      user: {
-        select: {
-          id: true,
-          username: true,
-          displayName: true,
-          avatar: true,
-          profile: true,
-        },
-      },
-      medias: {
-        select: {
-          id: true,
-          url: true,
-          type: true,
-        },
-      },
-      _count: {
-        select: {
-          replies: true,
-          likes: true,
-          bookmarks: true,
-          reposts: true,
-        },
-      },
+      ...userInclude,
+      ...postActionsInclude,
+      ...mediasInclude,
+      ...postCountInclude,
+
       repostOf: {
         select: {
           id: true,
           content: true,
           createdAt: true,
-          likes: { select: { userId: true } },
-          reposts: { select: { userId: true } },
-          bookmarks: {
-            select: {
-              userId: true,
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              username: true,
-              displayName: true,
-              avatar: true,
-              profile: true,
-            },
-          },
-          medias: {
-            select: {
-              id: true,
-              url: true,
-              type: true,
-            },
-          },
-          _count: {
-            select: {
-              replies: true,
-              likes: true,
-              bookmarks: true,
-              reposts: true,
-            },
-          },
+          ...userInclude,
+          ...postActionsInclude,
+          ...mediasInclude,
+          ...postCountInclude,
         },
       },
     },
   },
-};
-export const postWithRepostOfInclude = {
-  ...postInclude,
-  ...repostOfInclude,
 };
 
 export const parentInclude = {
@@ -129,39 +91,17 @@ export const parentInclude = {
       id: true,
       content: true,
       createdAt: true,
-      likes: { select: { userId: true } },
-      reposts: { select: { userId: true } },
-      bookmarks: {
-        select: {
-          userId: true,
-        },
-      },
-      user: {
-        select: {
-          id: true,
-          username: true,
-          displayName: true,
-          avatar: true,
-          profile: true,
-        },
-      },
-      medias: {
-        select: {
-          id: true,
-          url: true,
-          type: true,
-        },
-      },
-      _count: {
-        select: {
-          replies: true,
-          likes: true,
-          bookmarks: true,
-          reposts: true,
-        },
-      },
+      ...userInclude,
+      ...postActionsInclude,
+      ...mediasInclude,
+      ...postCountInclude,
     },
   },
+};
+
+export const postWithRepostOfInclude = {
+  ...postInclude,
+  ...repostOfInclude,
 };
 
 export const postWithParentInclude = {

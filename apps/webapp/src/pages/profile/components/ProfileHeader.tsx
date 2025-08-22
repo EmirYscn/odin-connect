@@ -10,6 +10,10 @@ import { useUser } from '../../../hooks/useUser';
 import { Profile } from '@odin-connect-monorepo/types';
 import ProfileImage from '../../../components/ProfileImage';
 import { formatJoinedDate } from '../../../lib/utils/formatDate';
+import Button from '../../../components/Button';
+import { useFollow } from '../../../hooks/useFollow';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 type ProfileHeaderProps = {
   profile: Profile | undefined;
@@ -17,8 +21,14 @@ type ProfileHeaderProps = {
 };
 
 function ProfileHeader({ profile, isLoading }: ProfileHeaderProps) {
+  const [isFollowButtonHovered, setIsFollowButtonHovered] = useState(false);
   const { user } = useUser();
+  const { followUser, isPending: isHandlingFollow } = useFollow();
   const isCurrentUser = user?.id === profile?.user.id;
+
+  const isFollowing = profile?.isFollowedByCurrentUser;
+  // const isFollower = profile.isFollowerOfCurrentUser;
+
   if (isLoading) {
     return <ProfileHeaderSkeleton />;
   }
@@ -26,16 +36,42 @@ function ProfileHeader({ profile, isLoading }: ProfileHeaderProps) {
   return (
     <>
       <div className="relative">
-        <ProfileBackgroundImage imgSrc={profile?.user.backgroundImage} />
+        <ProfileBackgroundImage
+          key={profile?.userId}
+          imgSrc={profile?.user.backgroundImage}
+        />
         <div className="absolute left-4 -bottom-12">
-          <ProfileImage imgSrc={profile?.user.avatar} context="profile" />
+          <ProfileImage
+            key={profile?.userId}
+            imgSrc={profile?.user.avatar}
+            context="profile"
+          />
         </div>
       </div>
-      {isCurrentUser ? <EditProfile /> : <div className="h-12" />}
+      {isCurrentUser ? (
+        <EditProfile />
+      ) : (
+        <div className="px-2 ml-auto">
+          <Button
+            variation="follow"
+            onClick={() => followUser(profile?.user?.username as string)}
+            className={`${isFollowing && 'hover:bg-red-500/80'}`}
+            disabled={isHandlingFollow}
+            onMouseEnter={() => setIsFollowButtonHovered(true)}
+            onMouseLeave={() => setIsFollowButtonHovered(false)}
+          >
+            {isFollowing
+              ? isFollowButtonHovered
+                ? 'Unfollow'
+                : 'Following'
+              : 'Follow'}
+          </Button>
+        </div>
+      )}
 
       <div className="p-2 flex flex-col gap-4 text-[var(--color-grey-700)]/80">
         <div className="flex flex-col gap-1">
-          <span className="font-semibold text-xl">
+          <span className="text-xl font-semibold">
             {profile?.user.displayName}
           </span>
           <span className="">@{profile?.user.username}</span>
@@ -77,11 +113,21 @@ function ProfileHeader({ profile, isLoading }: ProfileHeaderProps) {
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold">{profile?.user._count?.following}</span>
-            <span className="text-[var(--color-grey-500)]">Following</span>
+            <Link
+              to={`/profile/${profile?.user.username}/following`}
+              className="text-[var(--color-grey-500)] hover:underline"
+            >
+              Following
+            </Link>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold">{profile?.user._count?.followers}</span>
-            <span className="text-[var(--color-grey-500)]">Followers</span>
+            <Link
+              to={`/profile/${profile?.user.username}/followers`}
+              className="text-[var(--color-grey-500)] hover:underline"
+            >
+              Followers
+            </Link>
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@ import type { Profile } from '@odin-connect-monorepo/types';
 import { api } from './axios';
 import axios from 'axios';
 
-export const getProfile = async (id: string): Promise<Profile> => {
+export const getProfile = async (username: string): Promise<Profile> => {
   try {
-    const res = await api.get(`/profile/${id}`);
+    const res = await api.get(`/profile/${username}`);
     return res.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -6,12 +6,16 @@ import {
   HttpException,
   Param,
   Patch,
+  Post,
   UseInterceptors,
 } from '@nestjs/common';
+
 import { UsersService } from './users.service';
+import type { User as UserType } from '@prisma/client';
+
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UpdateUserSettingsDto } from './dtos/update-user-settings.dto';
-import type { User as UserType } from '@prisma/client';
+
 import { Auth } from '../common/decorators/auth.decorator';
 import { User } from '../common/decorators/user.decorator';
 import { UsersInterceptor } from '../common/interceptors/users.interceptor';
@@ -31,6 +35,22 @@ export class UsersController {
     const user = await this.userService.getUserById(id);
     if (!user) throw new HttpException('User not found', 404);
     return user;
+  }
+
+  @Post(':username/follow')
+  @Auth()
+  async followUser(@User() user: UserType, @Param('username') username: string) {
+    return this.userService.toggleFollowUser(user.id, username);
+  }
+
+  @Get(':username/following')
+  async getUserFollowing(@Param('username') username: string) {
+    return this.userService.getUserFollowing(username);
+  }
+
+  @Get(':username/followers')
+  async getUserFollowers(@Param('username') username: string) {
+    return this.userService.getUserFollowers(username);
   }
 
   @Delete()

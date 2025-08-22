@@ -2,12 +2,12 @@ import Posts from '../../../components/Posts';
 import { useProfileReplies } from '../../../hooks/useProfileReplies';
 
 type RepliesProps = {
-  profileId: string;
+  username: string;
 };
 
-function Replies({ profileId }: RepliesProps) {
+function Replies({ username }: RepliesProps) {
   const { replies, isLoading: isLoadingReplies } = useProfileReplies(
-    profileId as string
+    username as string
   );
 
   return (

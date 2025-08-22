@@ -95,7 +95,7 @@ function ProfileImage({
             alt="Profile"
             width={sizePx[size]}
             height={sizePx[size]}
-            className="object-cover rounded-full w-full h-full"
+            className="object-cover w-full h-full rounded-full"
             onError={handleError}
           />
         )}

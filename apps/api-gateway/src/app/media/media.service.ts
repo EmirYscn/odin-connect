@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from '@odin-connect-monorepo/prisma';
 import { Media, MEDIA_TYPE } from '@prisma/client';
 import { SupabaseService } from '../supabase/supabase.service';
@@ -69,14 +73,10 @@ export class MediaService {
     }
   }
 
-  async getProfileMedias(profileId: string): Promise<Media[]> {
-    const profile = await this.profileService.getProfileById(profileId);
-    if (!profile) {
-      throw new InternalServerErrorException('Profile not found');
-    }
-    const user = await this.usersService.getUserById(profile.userId);
+  async getProfileMedias(username: string): Promise<Media[]> {
+    const user = await this.usersService.getUserByUsername(username);
     if (!user) {
-      throw new InternalServerErrorException('User not found');
+      throw new BadRequestException('User not found');
     }
 
     const medias = await this.prisma.media.findMany({

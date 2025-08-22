@@ -72,11 +72,6 @@ function Post({ post, isLoading, isParentPost, isRepostOf }: PostProps) {
               <Post post={repostOf.repostOf} isRepostOf />
             )}
 
-            {/* if this post is a reply to another post */}
-            {/* {post.parentId && post.parent && (
-            <Post post={post.parent} isParentPost />
-          )} */}
-
             {!isRepostOf && <PostActions post={repostOf} />}
           </div>
         </div>

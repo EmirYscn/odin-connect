@@ -5,11 +5,11 @@ import { MediaService } from './media.service';
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
-  @Get('profile/:profileId')
-  getProfileMedias(@Param('profileId') profileId: string) {
-    if (!profileId) {
-      throw new BadRequestException('Profile ID is required');
+  @Get('profile/:username')
+  getProfileMedias(@Param('username') username: string) {
+    if (!username) {
+      throw new BadRequestException('Username is required');
     }
-    return this.mediaService.getProfileMedias(profileId);
+    return this.mediaService.getProfileMedias(username);
   }
 }

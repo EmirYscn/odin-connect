@@ -12,6 +12,41 @@ export class ProfileService {
     private readonly supabaseService: SupabaseService
   ) {}
 
+  async getProfileByUsername(username: string) {
+    const user = await this.usersService.getUserByUsername(username);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const profile = await this.prisma.profile.findUnique({
+      where: { id: user?.profile?.id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            displayName: true,
+            username: true,
+            avatar: true,
+            backgroundImage: true,
+            followers: {
+              select: { followerId: true },
+            },
+            following: {
+              select: { followingId: true },
+            },
+            _count: {
+              select: { posts: true, followers: true, following: true },
+            },
+          },
+        },
+      },
+    });
+    if (!profile) {
+      throw new BadRequestException('Profile not found');
+    }
+    return profile;
+  }
+
   async getProfileById(id: string) {
     const profile = await this.prisma.profile.findUnique({
       where: { id },
@@ -23,6 +58,12 @@ export class ProfileService {
             username: true,
             avatar: true,
             backgroundImage: true,
+            followers: {
+              select: { followerId: true },
+            },
+            following: {
+              select: { followingId: true },
+            },
             _count: {
               select: { posts: true, followers: true, following: true },
             },
@@ -86,6 +127,7 @@ export class ProfileService {
           data: userData,
         });
       }
+
       if (Object.keys(profileFields).length > 0) {
         await tx.profile.update({
           where: { id },
@@ -98,6 +140,7 @@ export class ProfileService {
     let avatarUrl: string | undefined;
     if (avatarFile) {
       avatarUrl = await this.supabaseService.uploadAvatar(avatarFile, id);
+
       await this.prisma.user.update({
         where: { id: user.id },
         data: { avatar: avatarUrl },
@@ -110,6 +153,7 @@ export class ProfileService {
         backgroundFile,
         id
       );
+
       await this.prisma.user.update({
         where: { id: user.id },
         data: { backgroundImage: backgroundUrl },

@@ -12,8 +12,8 @@ export const getFollowingPosts = async (): Promise<Post[]> => {
   return response.data;
 };
 
-export const getProfilePosts = async (profileId: string): Promise<Post[]> => {
-  const response = await api.get(`/posts/profile/${profileId}`);
+export const getProfilePosts = async (username: string): Promise<Post[]> => {
+  const response = await api.get(`/posts/profile/${username}`);
   return response.data;
 };
 
@@ -27,8 +27,8 @@ export const getReplies = async (postId: string): Promise<Post[]> => {
   return response.data;
 };
 
-export const getProfileReplies = async (profileId: string): Promise<Post[]> => {
-  const response = await api.get(`/posts/profile/${profileId}/replies`);
+export const getProfileReplies = async (username: string): Promise<Post[]> => {
+  const response = await api.get(`/posts/profile/${username}/replies`);
   return response.data;
 };
 

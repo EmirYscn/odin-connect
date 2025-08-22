@@ -1,9 +1,7 @@
 import * as Joi from 'joi';
 
 export default Joi.object({
-  NODE_ENV: Joi.string()
-    .valid('development', 'production', 'test')
-    .default('development'),
+  NODE_ENV: Joi.string().valid('development', 'production', 'test'),
   PORT: Joi.number().port().default(3000),
 
   DATABASE_URL: Joi.string().required(),
@@ -31,4 +29,6 @@ export default Joi.object({
   SUPABASE_KEY: Joi.string().required(),
 
   UPLOAD_FILE_SIZE_LIMIT: Joi.number().default(1), // Default to 1 MB
+
+  RABBITMQ_URL: Joi.string().required(),
 });

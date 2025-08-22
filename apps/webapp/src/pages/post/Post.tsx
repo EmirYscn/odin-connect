@@ -22,9 +22,7 @@ function PostPage() {
           Post
         </span>
       </div>
-      {/* {post && post.parentId && post.parent && (
-        <Post key={post.parent.id} post={post.parent} />
-      )} */}
+
       {post && <Post key={post.id} post={post} isLoading={isPostLoading} />}
       <div className="flex flex-col">
         <PostInput placeholder="Post your reply" parentPostId={id as string} />
