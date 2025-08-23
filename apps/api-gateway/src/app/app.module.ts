@@ -15,6 +15,7 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { EventsModule } from './events/events.module';
 import { NotificationClientModule } from './notification-client/notification-client.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { CronService } from './cron/cron.service';
 
 const ENV = process.env.NODE_ENV;
 
@@ -39,6 +40,6 @@ const ENV = process.env.NODE_ENV;
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CronService],
 })
 export class AppModule {}

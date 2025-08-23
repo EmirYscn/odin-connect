@@ -91,4 +91,17 @@ export class NotificationsService {
       data: { read: true },
     });
   }
+
+  async deleteNotificationsOlderThanXDays(days: number) {
+    const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const notifications = await this.prisma.notification.deleteMany({
+      where: {
+        createdAt: {
+          lt: cutoffDate,
+        },
+      },
+    });
+
+    return notifications.count;
+  }
 }

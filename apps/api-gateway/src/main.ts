@@ -20,7 +20,6 @@ async function bootstrap() {
   const rabbitMqUrl = configService.get<string>(
     'appConfig.rabbitMqUrl'
   ) as string;
-  console.log(`RabbitMQ URL: ${rabbitMqUrl}`);
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
