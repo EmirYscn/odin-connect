@@ -3,6 +3,7 @@ import Header from './Header';
 import MiscSidebar from './MiscSidebar';
 import ProtectedRoute from './ProtectedRoute';
 import Sidebar from './Sidebar';
+import ScrollToTop from './ScrollToTop';
 
 export default function AppLayout() {
   return (
@@ -11,7 +12,8 @@ export default function AppLayout() {
         <aside className="">
           <Sidebar />
         </aside>
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto" id="main-content">
+          <ScrollToTop />
           <Outlet />
         </div>
         <div className="block md:hidden">

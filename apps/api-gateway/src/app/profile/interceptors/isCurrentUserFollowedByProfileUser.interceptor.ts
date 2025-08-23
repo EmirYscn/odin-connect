@@ -19,19 +19,25 @@ function handleIsFollowedByField(
   currentUserId: string
 ): any {
   if (!profile || typeof profile !== 'object') return profile;
-  const isFollowedByCurrentUser = profile.user.followers.some(
-    (follower) => follower.followerId === currentUserId
+  const isCurrentUserFollowedByThisUser = profile.user.following.some(
+    (following) => following.followingId === currentUserId
   );
+
+  //   console.log(`Current User ID: ${currentUserId}`);
+  //   console.log(`Followers: ${profile.user.followers.map((f) => f.followerId)}`);
+  //   console.log(`Is followed by current user: ${isFollowedByCurrentUser}`);
 
   return {
     ...profile,
-    isFollowedByCurrentUser,
+    isCurrentUserFollowedByThisUser,
   };
 }
 
 type Data = Profile;
 
-export class IsFollowedByCurrentUserInterceptor implements NestInterceptor {
+export class IsCurrentUserFollowedByProfileUserInterceptor
+  implements NestInterceptor
+{
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>
@@ -41,6 +47,7 @@ export class IsFollowedByCurrentUserInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map((data: Data) => {
+        console.log('INSIDE INTERCEPTOR');
         // Single Profile
         if (data && typeof data === 'object') {
           return handleIsFollowedByField(data as FullProfile, currentUserId);

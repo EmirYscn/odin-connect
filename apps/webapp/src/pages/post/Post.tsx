@@ -6,6 +6,7 @@ import Posts from '../../components/Posts';
 import { usePost } from '../../hooks/usePost';
 import { useReplies } from '../../hooks/useReplies';
 import NotFound from './NotFound';
+import PageHeader from '../../components/PageHeader';
 
 function PostPage() {
   const { id } = useParams();
@@ -16,12 +17,7 @@ function PostPage() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center gap-2 py-4">
-        <BackButton navigateTo="/home" />
-        <span className="text-xl font-semibold text-[var(--color-grey-700)]/90">
-          Post
-        </span>
-      </div>
+      <PageHeader text="Post" />
 
       {post && <Post key={post.id} post={post} isLoading={isPostLoading} />}
       <div className="flex flex-col">

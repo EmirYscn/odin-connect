@@ -24,6 +24,7 @@ import { FileTypeValidationPipe } from '../common/pipes/file-type-validation.pip
 import { FileSizeValidationPipe } from '../common/pipes/file-size-validation.pipe';
 import { ImageCompressionPipe } from '../common/pipes/image-compression.pipe';
 import { IsFollowedByCurrentUserInterceptor } from './interceptors/isFollowedByCurrentUser.interceptor';
+import { IsCurrentUserFollowedByProfileUserInterceptor } from './interceptors/isCurrentUserFollowedByProfileUser.interceptor';
 
 @Controller('profile')
 export class ProfileController {
@@ -34,7 +35,10 @@ export class ProfileController {
 
   @Get(':username')
   @Auth()
-  @UseInterceptors(IsFollowedByCurrentUserInterceptor)
+  @UseInterceptors(
+    IsCurrentUserFollowedByProfileUserInterceptor,
+    IsFollowedByCurrentUserInterceptor
+  )
   getProfileByUsername(@Param('username') username: string) {
     if (!username) {
       throw new BadRequestException('Username is required');

@@ -5,6 +5,7 @@ import { useNotifications } from '../../hooks/useNotifications';
 
 import Notification from './components/Notification';
 import NotificationSkeleton from './components/NotificationSkeleton';
+import PageHeader from '../../components/PageHeader';
 
 function Notifications() {
   const {
@@ -37,7 +38,8 @@ function Notifications() {
   }
 
   return (
-    <div className="flex flex-col w-full gap-8 p-10">
+    <div className="flex flex-col w-full gap-8 p-4">
+      <PageHeader text="Notifications" />
       {notifications &&
         notifications.map((notification) => (
           <Notification key={notification.id} notification={notification} />

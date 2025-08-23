@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUserFollowing } from '../../../hooks/useUserFollowing';
 import ProfileImage from '../../../components/ProfileImage';
 import BackButton from '../../../components/BackButton';
+import PageHeader from '../../../components/PageHeader';
 
 function Following() {
   const { username } = useParams();
@@ -30,7 +31,8 @@ function Following() {
 
   return (
     <div className="flex flex-col gap-4 p-4 ">
-      <BackButton navigateTo={`/profile/${username}`} />
+      <PageHeader text="Following" backTo={`/profile/${username}`} />
+
       {following && following.length > 0 ? (
         following.map((user) => (
           <Link

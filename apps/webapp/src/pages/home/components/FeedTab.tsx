@@ -2,14 +2,23 @@ export type FeedTabContext = 'foryou' | 'following';
 
 type FeedTabProps = {
   context: FeedTabContext;
-  setContext: React.Dispatch<React.SetStateAction<FeedTabContext>>;
+  onTabChange: (context: FeedTabContext) => void;
 };
 
-function FeedTab({ context, setContext }: FeedTabProps) {
+function FeedTab({ context, onTabChange }: FeedTabProps) {
   return (
     <div className="flex justify-center w-full sticky text-[var(--color-grey-700)] top-0 z-10 cursor-pointer mb-3 shadow-md backdrop-blur-md rounded-xl">
       <div
-        onClick={() => setContext('foryou')}
+        onClick={() => {
+          if (context === 'foryou') {
+            // scroll to top if already on the same tab
+            const scrollContainer = document.getElementById('main-content');
+            if (scrollContainer) {
+              scrollContainer.scrollTo({ top: 0, behavior: 'smooth' }); // Scrolls to top
+            }
+          }
+          onTabChange('foryou');
+        }}
         className={`text-center w-full py-4 px-6 border-b ${
           context === 'foryou'
             ? 'border-b-4 border-[var(--color-brand-100)]'
@@ -19,7 +28,16 @@ function FeedTab({ context, setContext }: FeedTabProps) {
         <span>For you</span>
       </div>
       <div
-        onClick={() => setContext('following')}
+        onClick={() => {
+          if (context === 'following') {
+            // scroll to top if already on the same tab
+            const scrollContainer = document.getElementById('main-content');
+            if (scrollContainer) {
+              scrollContainer.scrollTo({ top: 0, behavior: 'smooth' }); // Scrolls to top
+            }
+          }
+          onTabChange('following');
+        }}
         className={`text-center w-full py-4 px-6 border-b ${
           context === 'following'
             ? 'border-b-4 border-[var(--color-brand-100)]'

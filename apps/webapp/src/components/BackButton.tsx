@@ -12,7 +12,12 @@ function BackButton({ navigateTo }: { navigateTo?: string }) {
       navigate(-1); // Go back in history
     }
   };
-  return <Button icon={<FaArrowLeft />} onClick={handleRouting} />;
+  return (
+    <Button
+      icon={<FaArrowLeft className="text-gray-300" />}
+      onClick={handleRouting}
+    />
+  );
 }
 
 export default BackButton;

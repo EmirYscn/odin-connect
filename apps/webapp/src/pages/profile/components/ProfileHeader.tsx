@@ -27,7 +27,7 @@ function ProfileHeader({ profile, isLoading }: ProfileHeaderProps) {
   const isCurrentUser = user?.id === profile?.user.id;
 
   const isFollowing = profile?.isFollowedByCurrentUser;
-  // const isFollower = profile.isFollowerOfCurrentUser;
+  const isFollower = profile?.isCurrentUserFollowedByThisUser;
 
   if (isLoading) {
     return <ProfileHeaderSkeleton />;
@@ -64,6 +64,8 @@ function ProfileHeader({ profile, isLoading }: ProfileHeaderProps) {
               ? isFollowButtonHovered
                 ? 'Unfollow'
                 : 'Following'
+              : isFollower
+              ? 'Follow Back'
               : 'Follow'}
           </Button>
         </div>
@@ -74,7 +76,14 @@ function ProfileHeader({ profile, isLoading }: ProfileHeaderProps) {
           <span className="text-xl font-semibold">
             {profile?.user.displayName}
           </span>
-          <span className="">@{profile?.user.username}</span>
+          <div className="flex items-center gap-2">
+            <span className="">@{profile?.user.username}</span>
+            {isFollower && (
+              <span className="px-1 py-0.5 text-[var(--color-grey-700)]/80 bg-[var(--color-blue-100)] rounded-md text-xs font-medium">
+                Follows you
+              </span>
+            )}
+          </div>
         </div>
 
         <div>

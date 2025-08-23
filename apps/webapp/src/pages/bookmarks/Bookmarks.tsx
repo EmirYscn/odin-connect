@@ -5,6 +5,7 @@ import Button from '../../components/Button';
 import SpinnerMini from '../../components/SpinnerMini';
 import PostSkeleton from '../../components/PostSkeleton';
 import BackButton from '../../components/BackButton';
+import PageHeader from '../../components/PageHeader';
 
 function Bookmarks() {
   const {
@@ -27,12 +28,7 @@ function Bookmarks() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center gap-2 py-4 sticky top-0 z-10 backdrop-blur-md bg-[var(--color-grey-50)]/10 rounded-bl-md rounded-br-md">
-        <BackButton navigateTo="/home" />
-        <span className="text-xl font-semibold text-[var(--color-grey-700)]/90">
-          Bookmarks
-        </span>
-      </div>
+      <PageHeader text="Bookmarks" />
       {bookmarks?.map((bookmark) => (
         <Post
           key={bookmark.id}

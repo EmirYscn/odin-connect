@@ -83,6 +83,7 @@ export type Profile = {
   user: User;
 
   isFollowedByCurrentUser?: boolean; // Indicates if the current user follows this profile
+  isCurrentUserFollowedByThisUser?: boolean; // Indicates if this profile follows the current user
 } & DateFields;
 
 export type Notification = {

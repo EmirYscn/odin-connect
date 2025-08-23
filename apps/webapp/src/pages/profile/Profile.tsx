@@ -3,11 +3,12 @@ import { useProfile } from '../../hooks/useProfile';
 import { useProfilePosts } from '../../hooks/useProfilePosts';
 import ProfileTabs, { ProfileTabContext } from './components/ProfileTabs';
 import { useState } from 'react';
-import BackButton from '../../components/BackButton';
+
 import ProfileHeader from './components/ProfileHeader';
 import Posts from '../../components/Posts';
 import Replies from './components/Replies';
 import Medias from './components/Medias';
+import PageHeader from '../../components/PageHeader';
 
 function Profile() {
   const { username } = useParams();
@@ -21,13 +22,8 @@ function Profile() {
   const [context, setContext] = useState<ProfileTabContext>('posts');
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center gap-2 py-4 sticky top-0 z-10 backdrop-blur-md bg-[var(--color-grey-50)]/10 rounded-bl-md rounded-br-md">
-        <BackButton navigateTo="/home" />
-        <span className="text-xl font-semibold text-[var(--color-grey-700)]/90">
-          {profile?.user.displayName}
-        </span>
-      </div>
+    <div key={profile?.id} className="flex flex-col gap-4 p-4">
+      <PageHeader text={profile?.user.displayName} />
 
       <ProfileHeader profile={profile} isLoading={isLoadingProfile} />
 
