@@ -4,7 +4,6 @@ import { useBookmarks } from '../../hooks/useBookmarks';
 import Button from '../../components/Button';
 import SpinnerMini from '../../components/SpinnerMini';
 import PostSkeleton from '../../components/PostSkeleton';
-import BackButton from '../../components/BackButton';
 import PageHeader from '../../components/PageHeader';
 
 function Bookmarks() {

@@ -12,7 +12,7 @@ function Searchbar({
   setSearchValue,
 }: SearchbarProps) {
   return (
-    <div className="flex gap-4 items-center px-4 py-1 rounded-full border-1 border-[var(--color-grey-700)]/30 focus-within:border-[var(--color-grey-700)]/50 text-[var(--color-grey-700)]/90">
+    <div className="flex gap-4 items-center px-4 py-1 rounded-full border-1 border-[var(--color-grey-700)]/30 focus-within:border-[var(--color-grey-700)]/50 text-[var(--color-grey-700)]/90 focus-within:shadow-sm">
       <label
         htmlFor="searchbar"
         className="cursor-pointer text-[var(--color-grey-700)]/90 focus:border-[var(--color-grey-700)]/50"

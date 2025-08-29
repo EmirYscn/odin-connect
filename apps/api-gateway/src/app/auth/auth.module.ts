@@ -12,6 +12,7 @@ import authConfig from './config/auth.config';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GithubStrategy } from './strategies/github.strategy';
 import { UsersModule } from '../users/users.module';
+import { WsJwtGuard } from './guards/ws-jwt.guard';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UsersModule } from '../users/users.module';
     GoogleStrategy,
     GithubStrategy,
     JwtStrategy,
+    WsJwtGuard,
     {
       provide: HashingProvider,
       useClass: BcryptProvider,

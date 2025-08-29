@@ -9,6 +9,7 @@ import { Notification as NotificationType } from '@odin-connect-monorepo/types';
 import { HiOutlineBell, HiOutlineHeart } from 'react-icons/hi2';
 import { BiCommentDetail, BiRepost } from 'react-icons/bi';
 import { DateMessage } from '../../../hooks/useNotifications';
+import { LuUserRound } from 'react-icons/lu';
 
 function Notification({
   notification,
@@ -21,6 +22,7 @@ function Notification({
   if (notification.type === 'LIKE') Icon = HiOutlineHeart;
   else if (notification.type === 'REPOST') Icon = BiRepost;
   else if (notification.type === 'REPLY') Icon = BiCommentDetail;
+  else if (notification.type === 'FOLLOW') Icon = LuUserRound;
 
   // Extract the actor and message from the notification
   const actor =
@@ -29,6 +31,15 @@ function Notification({
     notification.type !== 'SYSTEM' &&
     actor &&
     notification.message.replace(actor, '').trim();
+
+  const notificationNavigate = () => {
+    const nt = notification as NotificationType;
+    if (nt.postId) {
+      navigate(`/post/${nt.postId}`);
+    } else if (nt.type === 'FOLLOW') {
+      navigate(`/profile/${nt.actor.username}`);
+    }
+  };
 
   // Format the date for today and yesterday
   const today = formatDateWithoutTime(new Date().toISOString());
@@ -54,7 +65,7 @@ function Notification({
       className={`flex gap-4 items-center rounded-xl shadow-md border border-[var(--color-grey-100)]/60 px-6 py-4 transition-transform hover:scale-[1.02] hover:shadow-lg cursor-default relative`}
       onClick={(e) => {
         e.stopPropagation();
-        navigate(`/post/${notification.postId}`);
+        notificationNavigate();
       }}
     >
       {!notification.read && (
@@ -67,7 +78,7 @@ function Notification({
         className="hover:opacity-80"
         onClick={(e) => {
           e.stopPropagation();
-          navigate(`/profile/${notification.actor.profile?.id}`);
+          navigate(`/profile/${notification.actor.username}`);
         }}
       >
         <ProfileImage imgSrc={notification.actor.avatar} size="sm" />
@@ -79,7 +90,7 @@ function Notification({
             className="font-semibold text-[var(--color-grey-800)] hover:font-bold hover:underline cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/profile/${notification.actor.profile?.id}`);
+              navigate(`/profile/${notification.actor.username}`);
             }}
           >
             {actor}

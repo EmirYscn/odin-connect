@@ -9,13 +9,15 @@ import { PrismaService } from '@odin-connect-monorepo/prisma';
 import { Prisma } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import { HashingProvider } from '../auth/provider/hashing.provider';
+import { NotificationClientService } from '../notification-client/notification-client.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(forwardRef(() => HashingProvider))
-    private readonly hashingProvider: HashingProvider
+    private readonly hashingProvider: HashingProvider,
+    private readonly notificationPub: NotificationClientService
   ) {}
 
   async createUser(data: Prisma.UserCreateInput, hasPassword = true) {
@@ -205,6 +207,13 @@ export class UsersService {
           followingId,
         },
       });
+
+      await this.notificationPub.tryCreateUserRelatedNotification(
+        followerId,
+        followingId,
+        'user:followed',
+        'FOLLOW'
+      );
 
       return { status: 'followed', follow };
     });

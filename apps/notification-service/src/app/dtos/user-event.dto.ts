@@ -1,8 +1,8 @@
 import { IsString } from 'class-validator';
 
-export abstract class PostEventDto {
+export abstract class UserEventDto {
   @IsString()
   actorId!: string;
   @IsString()
-  postId!: string;
+  userId!: string;
 }

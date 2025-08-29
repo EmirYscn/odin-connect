@@ -59,7 +59,7 @@ export class NotificationsService {
     });
   }
 
-  async checkNotificationCreatedRecently(
+  async checkPostRelatedNotificationCreatedRecently(
     actorId: string,
     postId: string,
     type: NOTIFICATION_TYPE
@@ -69,6 +69,26 @@ export class NotificationsService {
       where: {
         actorId,
         postId,
+        type,
+        createdAt: {
+          gte: oneDayAgo,
+        },
+      },
+    });
+
+    return !!existingNotification;
+  }
+
+  async checkUserRelatedNotificationCreatedRecently(
+    actorId: string,
+    userId: string,
+    type: NOTIFICATION_TYPE
+  ): Promise<boolean> {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const existingNotification = await this.prisma.notification.findFirst({
+      where: {
+        actorId,
+        userId,
         type,
         createdAt: {
           gte: oneDayAgo,

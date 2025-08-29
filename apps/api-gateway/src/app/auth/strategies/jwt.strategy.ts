@@ -11,7 +11,7 @@ import { JwtObject } from '../../common/types/jwt';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(authConfig.KEY)
-    private readonly authConfiguration: ConfigType<typeof authConfig>,
+    authConfiguration: ConfigType<typeof authConfig>,
     private readonly userService: UsersService
   ) {
     const jwtSecret = authConfiguration.secret;

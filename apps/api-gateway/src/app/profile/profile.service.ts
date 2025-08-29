@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from '@odin-connect-monorepo/prisma';
 import { Prisma } from '@prisma/client';
 import { UsersService } from '../users/users.service';
@@ -8,6 +13,7 @@ import { SupabaseService } from '../supabase/supabase.service';
 export class ProfileService {
   constructor(
     private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly supabaseService: SupabaseService
   ) {}

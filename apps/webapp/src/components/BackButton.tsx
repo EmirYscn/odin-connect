@@ -14,7 +14,7 @@ function BackButton({ navigateTo }: { navigateTo?: string }) {
   };
   return (
     <Button
-      icon={<FaArrowLeft className="text-gray-300" />}
+      icon={<FaArrowLeft className="text-[var(--color-grey-600)]" />}
       onClick={handleRouting}
     />
   );

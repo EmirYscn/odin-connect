@@ -4,7 +4,6 @@ import { PostsController } from './posts.controller';
 
 import { PrismaModule } from '@odin-connect-monorepo/prisma';
 import { UsersModule } from '../users/users.module';
-import { ProfileModule } from '../profile/profile.module';
 import { MediaModule } from '../media/media.module';
 import { EventsModule } from '../events/events.module';
 import { NotificationClientModule } from '../notification-client/notification-client.module';
@@ -13,8 +12,7 @@ import { NotificationClientModule } from '../notification-client/notification-cl
   imports: [
     PrismaModule,
     EventsModule,
-    UsersModule,
-    ProfileModule,
+    forwardRef(() => UsersModule),
     MediaModule,
     forwardRef(() => NotificationClientModule),
   ],

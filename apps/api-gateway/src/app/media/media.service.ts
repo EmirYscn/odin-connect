@@ -1,12 +1,13 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '@odin-connect-monorepo/prisma';
 import { Media, MEDIA_TYPE } from '@prisma/client';
 import { SupabaseService } from '../supabase/supabase.service';
-import { ProfileService } from '../profile/profile.service';
 import { UsersService } from '../users/users.service';
 
 const mediaMapping: Record<string, MEDIA_TYPE> = {
@@ -20,7 +21,7 @@ export class MediaService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly supabaseService: SupabaseService,
-    private readonly profileService: ProfileService,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService
   ) {}
 

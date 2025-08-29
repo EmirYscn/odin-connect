@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -7,7 +9,6 @@ import {
 import { Post } from '@prisma/client';
 
 import { UsersService } from '../users/users.service';
-import { ProfileService } from '../profile/profile.service';
 import { MediaService } from '../media/media.service';
 import { EventsGateway } from '../events/events.gateway';
 import { NotificationClientService } from '../notification-client/notification-client.service';
@@ -29,9 +30,10 @@ export class PostsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventsGateway: EventsGateway,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
-    private readonly profileService: ProfileService,
     private readonly mediaService: MediaService,
+    @Inject(forwardRef(() => NotificationClientService))
     private readonly notificationPub: NotificationClientService
   ) {}
 

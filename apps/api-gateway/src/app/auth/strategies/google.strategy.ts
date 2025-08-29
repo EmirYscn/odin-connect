@@ -8,7 +8,7 @@ import { AuthService } from '../auth.service';
 export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(authConfig.KEY)
-    private readonly authConfiguration: ConfigType<typeof authConfig>,
+    authConfiguration: ConfigType<typeof authConfig>,
     private readonly authService: AuthService
   ) {
     const { clientId, clientSecret, callbackUrl } = authConfiguration.google;

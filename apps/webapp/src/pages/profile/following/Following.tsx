@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUserFollowing } from '../../../hooks/useUserFollowing';
 import ProfileImage from '../../../components/ProfileImage';
-import BackButton from '../../../components/BackButton';
+
 import PageHeader from '../../../components/PageHeader';
 
 function Following() {

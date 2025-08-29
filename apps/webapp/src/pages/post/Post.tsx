@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import BackButton from '../../components/BackButton';
+
 import Post from '../../components/Post';
 import PostInput from '../../components/PostInput';
 import Posts from '../../components/Posts';

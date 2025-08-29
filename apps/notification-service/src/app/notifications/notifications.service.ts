@@ -109,4 +109,33 @@ export class NotificationsService {
       },
     });
   }
+
+  async createUserFollowedNotification(actorId: string, userId: string) {
+    const actor = await this.prisma.user.findUnique({
+      where: { id: actorId },
+      select: { displayName: true },
+    });
+    if (!actor) {
+      throw new NotFoundException(`User with ID ${actorId} not found`);
+    }
+
+    const followedUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { displayName: true },
+    });
+    if (!followedUser) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    const message = `${actor.displayName} followed you`;
+
+    return this.prisma.notification.create({
+      data: {
+        type: 'FOLLOW',
+        message,
+        userId,
+        actorId,
+      },
+    });
+  }
 }

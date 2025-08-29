@@ -5,6 +5,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { API_GATEWAY_RABBITMQ } from '@odin-connect-monorepo/types';
 import { emitMQEvent } from './common/utils/mq-functions';
 import { PostRepostedDto } from './dtos/post-reposted.dto';
+import { UserFollowedDto } from './dtos/user-followed.dto';
 
 @Injectable()
 export class AppService {
@@ -67,6 +68,28 @@ export class AppService {
       await this.notificationsService.createPostRepliedNotification(
         actorId,
         postId
+      );
+
+    if (notification) {
+      // emit notification event to the user
+      emitMQEvent(this.client, 'notification:created', {
+        notificationId: notification.id,
+      });
+    }
+    return;
+  }
+
+  async handleUserFollowed(data: UserFollowedDto) {
+    const { actorId, userId } = data;
+    console.log(
+      `Handling user followed event for userId: ${userId} by actorId: ${actorId}`
+    );
+
+    // create a notification
+    const notification =
+      await this.notificationsService.createUserFollowedNotification(
+        actorId,
+        userId
       );
 
     if (notification) {

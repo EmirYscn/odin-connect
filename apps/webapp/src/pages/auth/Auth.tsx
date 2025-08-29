@@ -22,8 +22,7 @@ function Auth() {
     if (encodedData) {
       try {
         const decodedData = JSON.parse(atob(encodedData));
-        const { status, provider, user, accessToken, refreshToken } =
-          decodedData;
+        const { provider, user, accessToken, refreshToken } = decodedData;
 
         queryClient.setQueryData([USER_QUERY_KEY], user);
 

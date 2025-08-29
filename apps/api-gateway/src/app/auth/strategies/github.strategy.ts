@@ -8,20 +8,20 @@ import { Profile, Strategy } from 'passport-github2';
 export class GithubStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(authConfig.KEY)
-    private readonly authConfiguration: ConfigType<typeof authConfig>,
+    authConfiguration: ConfigType<typeof authConfig>,
     private readonly authService: AuthService
   ) {
     const { clientId, clientSecret, callbackUrl } = authConfiguration.github;
 
     if (!clientId || !clientSecret || !callbackUrl) {
       throw new Error(
-        'Google OAuth configuration is not properly set in environment variables'
+        'Github OAuth configuration is not properly set in environment variables'
       );
     }
     super({
-      clientID: authConfiguration.github.clientId as string,
-      clientSecret: authConfiguration.github.clientSecret as string,
-      callbackURL: authConfiguration.github.callbackUrl as string,
+      clientID: clientId as string,
+      clientSecret: clientSecret as string,
+      callbackURL: callbackUrl as string,
       scope: ['user:email', 'read:user'],
     });
   }
