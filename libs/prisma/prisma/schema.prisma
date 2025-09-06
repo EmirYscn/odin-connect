@@ -164,19 +164,6 @@ model Bookmark {
   @@unique([userId, postId])
 }
 
-// model Repost {
-//   id        String   @id @default(uuid())
-//   createdAt DateTime @default(now())
-
-//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   userId    String
-
-//   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-//   postId    String
-
-//   @@unique([userId, postId]) // A user can retweet a post only once
-// }
-
 model Media {
   id   String     @id @default(uuid())
   url  String // Direct URL to the media file
