@@ -7,6 +7,7 @@ import type { ConfigType } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { MediaType } from '@odin-connect-monorepo/types';
 
 import appConfig from '../config/app.config';
 
@@ -134,7 +135,7 @@ export class SupabaseService {
     const ext = mimetype.split('/')[1];
     const timestamp = Date.now();
     const uniqueId = randomUUID();
-    const mediaType = mimetype.split('/')[0] as string;
+    const mediaType = mimetype.split('/')[0] as MediaType;
 
     const folderName = `user-${userId}`;
     const fileName = `${postId}-${timestamp}-${uniqueId}.${ext}`;

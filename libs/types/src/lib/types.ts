@@ -187,36 +187,6 @@ export type FullPost = Post & {
   repostOf?: FullPost | null; // If this post is a repost, include the original post
 };
 
-// export interface PostCreatedPayload {
-//   id: string;
-//   content?: string | null; // Content of the post, can be null for reposts
-//   createdAt: string;
-//   user: {
-//     id: string;
-//     username: string;
-//     displayName: string | null;
-//     avatar?: string | null;
-//     profile: {
-//       id: string;
-//     } | null;
-//   };
-//   likes: {
-//     userId: string;
-//   }[];
-//   medias?: {
-//     id: string;
-//     url: string;
-//     filePath: string;
-//     type: MediaType;
-//   }[]; // Optional, if the post has media
-//   _count?: {
-//     replies?: number;
-//     likes?: number;
-//     bookmarks?: number;
-//     reposts?: number;
-//   };
-// }
-
 export interface ServerToClientEvents {
   'message:received': (data: any) => void;
   'post:created': (data: FullPost) => void;

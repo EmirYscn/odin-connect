@@ -6,14 +6,15 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '@odin-connect-monorepo/prisma';
-import { Media, MEDIA_TYPE } from '@prisma/client';
+import { Media } from '@prisma/client';
+import type { MediaType } from '@odin-connect-monorepo/types';
 import { SupabaseService } from '../supabase/supabase.service';
 import { UsersService } from '../users/users.service';
 
-const mediaMapping: Record<string, MEDIA_TYPE> = {
-  image: MEDIA_TYPE.IMAGE,
-  video: MEDIA_TYPE.VIDEO,
-  audio: MEDIA_TYPE.AUDIO,
+const mediaMapping: Record<string, MediaType> = {
+  image: 'IMAGE',
+  video: 'VIDEO',
+  audio: 'AUDIO',
 };
 
 @Injectable()
@@ -44,7 +45,7 @@ export class MediaService {
           userId,
           url: mediaUrls[index].publicUrl,
           filePath: mediaUrls[index].filePath,
-          type: mediaMapping[media.mimetype.split('/')[0]] as MEDIA_TYPE,
+          type: mediaMapping[media.mimetype.split('/')[0]] as MediaType,
         },
       })
     );
