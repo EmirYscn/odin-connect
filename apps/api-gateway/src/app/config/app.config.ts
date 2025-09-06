@@ -4,7 +4,7 @@ export default registerAs('appConfig', () => ({
   environment: process.env.NODE_ENV,
   databaseUrl: process.env.DATABASE_URL,
   clientUrl: process.env.CLIENT_URL,
-  serverUrl: process.env.SERVER_URL,
+  // serverUrl: process.env.SERVER_URL,
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseKey: process.env.SUPABASE_KEY,
   rabbitMqUrl: process.env.RABBITMQ_URL,

@@ -6,7 +6,7 @@ export default Joi.object({
 
   DATABASE_URL: Joi.string().required(),
   CLIENT_URL: Joi.string().uri().required(),
-  SERVER_URL: Joi.string().uri().required(),
+  // SERVER_URL: Joi.string().uri().required(),
 
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRESIN: Joi.number().required().default(3600), // 1 hour
