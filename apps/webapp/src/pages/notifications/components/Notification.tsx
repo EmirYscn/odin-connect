@@ -62,7 +62,7 @@ function Notification({
 
   return (
     <div
-      className={`flex gap-4 items-center rounded-xl shadow-md border border-[var(--color-grey-100)]/60 px-6 py-4 transition-transform hover:scale-[1.02] hover:shadow-lg cursor-default relative`}
+      className={`flex gap-4 items-center rounded-xl shadow-md border border-[var(--color-grey-100)]/60 px-2 sm:px-6 py-4 transition-transform hover:scale-[1.02] hover:shadow-lg cursor-default relative`}
       onClick={(e) => {
         e.stopPropagation();
         notificationNavigate();

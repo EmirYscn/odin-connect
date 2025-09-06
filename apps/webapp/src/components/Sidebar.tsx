@@ -55,16 +55,19 @@ function Sidebar() {
       name: 'Explore',
       icon: <IoSearch />,
       href: '/explore',
+      // class: 'hidden md:flex',
     },
     {
       name: 'Notifications',
       icon: <RiNotification3Line />,
       href: '/notifications',
+      class: 'hidden md:flex',
     },
     {
       name: 'Bookmarks',
       icon: <FaRegBookmark />,
       href: '/bookmarks',
+      class: 'hidden md:flex',
     },
     {
       name: 'Messages',
@@ -76,12 +79,12 @@ function Sidebar() {
       name: 'Profile',
       icon: <FaRegUser />,
       href: `/profile/${user?.username}`,
-      class: 'hidden md:flex',
     },
     {
       name: 'Settings',
       icon: <IoSettingsOutline />,
       href: '/settings',
+      class: 'hidden md:flex',
     },
   ];
   return (

@@ -38,7 +38,7 @@ function Notifications() {
   }
 
   return (
-    <div className="flex flex-col w-full gap-8 p-4">
+    <div className="flex flex-col w-full gap-8 p-2 sm:p-4">
       <PageHeader text="Notifications" />
       {notifications &&
         notifications.map((notification) => (

@@ -1,11 +1,5 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
 @import 'tailwindcss';
 @plugin 'tailwind-scrollbar';
-
-/* You can add global styles to this file, and also import other style files */
 
 :root,
 :root.light-mode {
@@ -101,11 +95,16 @@
   --image-opacity: 90%;
 }
 
-/* * {
+* {
   @apply scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent;
+}
+
+/* * {
+  outline: 1px solid red !important;
 } */
 
-html body {
+html,
+body {
   background-image: url('/background.jpg');
   background-repeat: no-repeat;
   background-size: cover;

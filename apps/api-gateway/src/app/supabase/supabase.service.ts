@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { randomUUID } from 'crypto';
-import { MEDIA_TYPE } from '@prisma/client';
+
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 import appConfig from '../config/app.config';
@@ -134,7 +134,7 @@ export class SupabaseService {
     const ext = mimetype.split('/')[1];
     const timestamp = Date.now();
     const uniqueId = randomUUID();
-    const mediaType = mimetype.split('/')[0] as MEDIA_TYPE;
+    const mediaType = mimetype.split('/')[0] as string;
 
     const folderName = `user-${userId}`;
     const fileName = `${postId}-${timestamp}-${uniqueId}.${ext}`;
