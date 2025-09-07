@@ -15,14 +15,17 @@ import Followers from '../pages/profile/followers/Followers';
 export function App() {
   useSocketNotificationEvents();
 
-  // In your main component or app entry point
-  console.log('=== ENV DEBUG ===');
-  console.log('NODE_ENV:', process.env.NODE_ENV);
-  console.log('Available env keys:', Object.keys(import.meta.env));
+  console.log('=== ENV VALUES DEBUG ===');
+  console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
   console.log(
-    'VITE_ prefixed vars:',
-    Object.keys(import.meta.env).filter((key) => key.startsWith('VITE_'))
+    'VITE_MESSAGING_APP_CLIENT_URL:',
+    import.meta.env.VITE_MESSAGING_APP_CLIENT_URL
   );
+  console.log('VITE_SOCKET_URL:', import.meta.env.VITE_SOCKET_URL);
+
+  // Check if they're empty strings vs undefined
+  console.log('VITE_API_URL type:', typeof import.meta.env.VITE_API_URL);
+  console.log('VITE_API_URL length:', import.meta.env.VITE_API_URL?.length);
 
   return (
     <Routes>
