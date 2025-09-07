@@ -14,6 +14,20 @@
 
 This project is still under development and some key features are yet to be implemented.
 
+## Project Structure
+
+The monorepo is organized into the following main directories:
+
+- **apps/api-gateway**: Main backend API (NestJS)
+- **apps/notification-service**: Microservice for notifications
+- **apps/webapp**: Frontend client (React + Vite)
+
+- **apps/api-gateway-e2e**: End-to-end tests for api-gateway
+- **apps/notification-service-e2e**: End-to-end tests for notification-service
+- **apps/webapp-e2e**: End-to-end tests for webapp
+
+Each directory contains its own configuration, source code, and test files to keep services
+
 ### 1. **api-gateway**
 
 The main backend API for OdinConnect, built with NestJS.
