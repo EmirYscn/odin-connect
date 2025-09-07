@@ -1,8 +1,7 @@
-import axios from "axios";
-import { env } from "../env";
-import { refreshToken } from "./auth";
+import axios from 'axios';
+import { refreshToken } from './auth';
 
-const API_BASE_URL = env.apiUrl;
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Create axios instance with base URL
 export const api = axios.create({
@@ -11,10 +10,10 @@ export const api = axios.create({
 
 // Add a request interceptor to include the token in headers
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem('accessToken');
 
   if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
 });
@@ -49,7 +48,7 @@ api.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
+            originalRequest.headers['Authorization'] = `Bearer ${token}`;
             return api(originalRequest);
           })
           .catch((err) => {
@@ -62,16 +61,16 @@ api.interceptors.response.use(
 
       try {
         const data = await refreshToken();
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
         processQueue(null, data.accessToken);
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

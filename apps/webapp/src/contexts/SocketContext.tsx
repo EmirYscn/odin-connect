@@ -2,10 +2,11 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '@odin-connect-monorepo/types';
-import { env } from '../lib/env';
 
 import { createContext, useContext, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const SocketContext = createContext<Socket<
   ServerToClientEvents,
@@ -15,7 +16,7 @@ const SocketContext = createContext<Socket<
 export let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null =
   null;
 if (typeof window !== 'undefined' && !socket) {
-  socket = io(env.socketUrl, {
+  socket = io(socketUrl, {
     autoConnect: false,
   });
 }

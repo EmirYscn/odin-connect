@@ -16,9 +16,10 @@ import { useDarkMode } from '../contexts/DarkMode/ThemeContextProvider';
 import { useLogout } from '../hooks/useLogout';
 import { useUser } from '../hooks/useUser';
 import { getServerToken } from '../lib/api/auth';
-import { env } from '../lib/env';
 import { Link } from 'react-router-dom';
 import { useUnreadNotificationsCount } from '../hooks/useUnreadNotificationsCount';
+
+const messagingAppClientUrl = import.meta.env.VITE_MESSAGING_APP_CLIENT_URL;
 
 type SidebarItem = {
   name: string;
@@ -42,7 +43,7 @@ function Sidebar() {
     // console.log(
     //   `${env.messagingAppClientUrl}/checkAccountStatus?data=${token}`
     // );
-    window.location.href = `${env.messagingAppClientUrl}/checkAccountStatus?data=${token}`;
+    window.location.href = `${messagingAppClientUrl}/checkAccountStatus?data=${token}`;
   };
 
   const sidebarItems: SidebarItem[] = [
