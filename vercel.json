@@ -1,5 +1,12 @@
 {
-  "buildCommand": "npx nx build webapp --prod",
+  "buildCommand": "npx nx build webapp --prod --skip-nx-cache",
   "outputDirectory": "apps/webapp/dist",
-  "framework": null
+  "framework": "vite",
+  "routes": [
+    {
+      "src": "/[^.]+",
+      "dest": "/",
+      "status": 200
+    }
+  ]
 }
