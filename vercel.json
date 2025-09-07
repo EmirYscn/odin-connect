@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npx nx build webapp --prod",
+  "outputDirectory": "apps/webapp/dist",
+  "framework": null
+}
