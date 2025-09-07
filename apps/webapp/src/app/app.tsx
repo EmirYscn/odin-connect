@@ -15,6 +15,15 @@ import Followers from '../pages/profile/followers/Followers';
 export function App() {
   useSocketNotificationEvents();
 
+  // In your main component or app entry point
+  console.log('=== ENV DEBUG ===');
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('Available env keys:', Object.keys(import.meta.env));
+  console.log(
+    'VITE_ prefixed vars:',
+    Object.keys(import.meta.env).filter((key) => key.startsWith('VITE_'))
+  );
+
   return (
     <Routes>
       <Route element={<AppLayout />}>
