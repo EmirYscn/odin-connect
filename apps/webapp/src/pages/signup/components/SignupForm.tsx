@@ -14,6 +14,7 @@ function SignupForm() {
     getValues,
     formState: { errors },
   } = useForm<SignupDataType & { passwordConfirm: string }>();
+
   const { signup, isPending } = useSignup();
 
   function onSubmit({ email, username, password }: SignupDataType) {
@@ -88,7 +89,7 @@ function SignupForm() {
       </FormRowVertical>
       <FormRowVertical>
         <Button type="submit" size="medium" variation="login">
-          {isPending ? 'Sign up' : <SpinnerMini />}
+          {!isPending ? 'Sign up' : <SpinnerMini />}
         </Button>
       </FormRowVertical>
     </form>
