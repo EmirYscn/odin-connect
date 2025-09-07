@@ -4,12 +4,65 @@
 
 ✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+
+---
+
+## Projects Overview
+
+### Note:
+
+This project is still under development and some key features are yet to be implemented.
+
+### 1. **api-gateway**
+
+The main backend API for OdinConnect, built with NestJS.
+
+**Features:**
+
+- **Authentication:** Local, Google, and Github OAuth, JWT-based auth, refresh tokens.
+- **User Management:** CRUD operations, follow/unfollow, user settings, profile management.
+- **Posts:** Create, update, delete, repost, reply, like, bookmark, and fetch posts (for you, following, profile, replies).
+- **Notifications:** Real-time notifications via RabbitMQ and WebSocket, unread count, mark as read, notification history.
+- **Media:** Upload and manage media files for posts.
+- **Cron Jobs:** Scheduled cleanup of old notifications.
+- **Microservices Integration:** Communicates with notification-service via RabbitMQ.
+- **Configurable via environment variables.**
+
+### 2. **notification-service**
+
+A dedicated microservice for handling notifications.
+
+**Features:**
+
+- **Event Consumption:** Listens for post and user events (liked, replied, reposted, followed) from api-gateway.
+- **Notification Creation:** Generates notifications for likes, replies, reposts, and follows.
+- **Notification Publishing:** Emits notification events back to api-gateway for real-time delivery.
+- **Prisma ORM:** Manages notification persistence.
+- **RabbitMQ Integration:** Robust message queue handling for scalability.
+- **Configurable via environment variables.**
+
+### 3. **webapp**
+
+The frontend client for OdinConnect, built with React and Vite.
+
+**Features:**
+
+- **Authentication:** Login, signup, OAuth flows.
+- **User Profiles:** View and edit profiles, follow/unfollow users.
+- **Feed:** For You, Following, Profile posts, and replies.
+- **Post Interactions:** Like, reply, repost, bookmark, and media uploads.
+- **Notifications:** Real-time notifications, unread count, mark all as read, notification history with date markers.
+- **Bookmarks:** Save and manage bookmarked posts.
+- **Responsive UI:** Styled with Tailwind CSS.
+- **Socket.IO Integration:** Real-time updates for notifications and posts.
+- **Configurable via environment variables.**
+
+---
 
 ## Finish your CI setup
 
 [Click here to finish setting up your workspace!](https://cloud.nx.app/connect/mbgJhNwxJ6)
-
 
 ## Generate a library
 
@@ -65,7 +118,6 @@ npx nx sync:check
 
 [Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
 
-
 [Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
 ## Install Nx Console
@@ -78,13 +130,13 @@ Nx Console is an editor extension that enriches your developer experience. It le
 
 Learn more:
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
+- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
 And join the Nx community:
+
 - [Discord](https://go.nx.dev/community)
 - [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
 - [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
