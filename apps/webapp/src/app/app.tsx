@@ -15,18 +15,6 @@ import Followers from '../pages/profile/followers/Followers';
 export function App() {
   useSocketNotificationEvents();
 
-  console.log('=== ENV VALUES DEBUG ===');
-  console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
-  console.log(
-    'VITE_MESSAGING_APP_CLIENT_URL:',
-    import.meta.env.VITE_MESSAGING_APP_CLIENT_URL
-  );
-  console.log('VITE_SOCKET_URL:', import.meta.env.VITE_SOCKET_URL);
-
-  // Check if they're empty strings vs undefined
-  console.log('VITE_API_URL type:', typeof import.meta.env.VITE_API_URL);
-  console.log('VITE_API_URL length:', import.meta.env.VITE_API_URL?.length);
-
   return (
     <Routes>
       <Route element={<AppLayout />}>
