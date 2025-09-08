@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { api } from './axios';
 import { User } from '@odin-connect-monorepo/types';
-// import { connectSocket, disconnectSocket } from './socket';
 import { connectSocket, disconnectSocket } from '../../contexts/SocketContext';
+import { env } from '../env';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = env.apiUrl;
 
 // Create axios instance with base URL
 export const bareApi = axios.create({

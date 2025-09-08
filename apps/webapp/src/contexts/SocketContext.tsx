@@ -5,8 +5,9 @@ import {
 
 import { createContext, useContext, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { env } from '../lib/env';
 
-const socketUrl = import.meta.env.VITE_SOCKET_URL;
+const SOCKET_URL = env.socketUrl;
 
 const SocketContext = createContext<Socket<
   ServerToClientEvents,
@@ -16,7 +17,7 @@ const SocketContext = createContext<Socket<
 export let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null =
   null;
 if (typeof window !== 'undefined' && !socket) {
-  socket = io(socketUrl, {
+  socket = io(SOCKET_URL, {
     autoConnect: false,
   });
 }

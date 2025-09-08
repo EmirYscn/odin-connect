@@ -22,7 +22,7 @@ function Logo({ size = 'lg' }: LogoProps) {
   let src = logo[size] || logo.lg;
   const width = widthValues[size] || widthValues.lg;
   const height = width;
-  src = '/logo2.svg';
+  src = '/logo.svg';
 
   return (
     <div className="flex justify-center">

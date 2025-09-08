@@ -3,8 +3,9 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '@odin-connect-monorepo/types';
+import { env } from '../env';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+const SOCKET_URL = env.socketUrl;
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   SOCKET_URL,

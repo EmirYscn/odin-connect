@@ -1,3 +1,5 @@
+import { env } from '../../../lib/env';
+
 const GoogleIcon = () => (
   <svg
     width="18"
@@ -24,7 +26,7 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = env.apiUrl;
 
 function GoogleButton() {
   // const { t } = useTranslation("auth");

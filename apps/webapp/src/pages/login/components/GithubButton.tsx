@@ -1,3 +1,5 @@
+import { env } from '../../../lib/env';
+
 const GitHubIcon = () => (
   <svg
     width="18"
@@ -12,7 +14,7 @@ const GitHubIcon = () => (
   </svg>
 );
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = env.apiUrl;
 
 function GitHubButton() {
   // const { t } = useTranslation("auth");
